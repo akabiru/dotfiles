@@ -10,7 +10,22 @@ return {
     "mason-org/mason-lspconfig.nvim",
     lazy = false,
     opts = {
+      ensure_installed = { "lua_ls", "ruby_lsp" },
       auto_install = true,
     },
+  },
+  {
+    "neovim/nvim-lspconfig",
+    lazy = false,
+    config = function()
+      vim.lsp.config("lua_ls", {
+        settings = {
+          Lua = {
+            runtime = { version = "LuaJIT" },
+            workspace = { library = { vim.env.VIMRUNTIME } },
+          },
+        },
+      })
+    end,
   },
 }

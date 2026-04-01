@@ -9,6 +9,7 @@ vim.g.mapleader = " "
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
+---@diagnostic disable-next-line: undefined-field
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   vim.fn.system({
     "git",
@@ -23,7 +24,3 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup("plugins")
-
--- LSP server configuration (built-in, no nvim-lspconfig needed)
-vim.lsp.enable("lua_ls")
-vim.lsp.enable("ruby_lsp")
