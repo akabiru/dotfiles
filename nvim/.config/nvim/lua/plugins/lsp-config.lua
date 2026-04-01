@@ -1,3 +1,8 @@
+-- LSP Configuration: Language server management via Mason + nvim-lspconfig
+-- Mason auto-installs servers listed in ensure_installed
+-- Servers: lua_ls (Lua), ruby_lsp (Ruby), ts_ls (TypeScript/JavaScript)
+-- Keymaps: <leader>ca = code action (also available via gra)
+-- See: https://github.com/neovim/nvim-lspconfig
 return {
   {
     "mason-org/mason.nvim",
@@ -18,6 +23,9 @@ return {
     "neovim/nvim-lspconfig",
     lazy = false,
     config = function()
+      local capabilities = require("blink.cmp").get_lsp_capabilities()
+      vim.lsp.config("*", { capabilities = capabilities })
+
       vim.lsp.config("lua_ls", {
         settings = {
           Lua = {
