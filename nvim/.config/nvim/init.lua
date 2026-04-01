@@ -23,3 +23,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup("plugins")
+
+-- LSP server configuration (built-in, no nvim-lspconfig needed)
+vim.lsp.enable("lua_ls")
+vim.lsp.enable("ruby_lsp")
