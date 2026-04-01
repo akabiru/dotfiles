@@ -6,3 +6,6 @@ vim.opt.expandtab = true
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
+
+-- Use fish shell for the built-in terminal (C-/ to toggle)
+vim.opt.shell = "/opt/homebrew/bin/fish"
