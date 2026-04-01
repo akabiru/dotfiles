@@ -1,9 +1,11 @@
 {
   "catppuccin": { "branch": "main", "commit": "a7788416689dbefea659d9e9415c87926b0ba5d8" },
   "lazy.nvim": { "branch": "main", "commit": "306a05526ada86a7b30af95c5cc81ffba93fef97" },
+  "lualine.nvim": { "branch": "master", "commit": "47f91c416daef12db467145e16bed5bbfe00add8" },
   "mason-lspconfig.nvim": { "branch": "main", "commit": "25f609e7fca78af7cede4f9fa3af8a94b1c4950b" },
   "mason.nvim": { "branch": "main", "commit": "44d1e90e1f66e077268191e3ee9d2ac97cc18e65" },
   "neo-tree.nvim": { "branch": "v3.x", "commit": "84c75e7a7e443586f60508d12fc50f90d9aee14e" },
+  "none-ls.nvim": { "branch": "main", "commit": "c9317c2a8629d4e39e7cf47be74cb67f3ab37cda" },
   "nui.nvim": { "branch": "main", "commit": "de740991c12411b663994b2860f1a4fd0937c130" },
   "nvim-lspconfig": { "branch": "master", "commit": "8e2084bf5e40c79c1f42210a6ef96a0a4793a763" },
   "nvim-treesitter": { "branch": "main", "commit": "7caec274fd19c12b55902a5b795100d21531391f" },
