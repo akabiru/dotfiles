@@ -1,3 +1,7 @@
+-- Neo-tree: File explorer sidebar
+-- <C-n> or <leader>e to toggle, press `/` inside neo-tree to search
+-- Shows dotfiles, auto-focuses file buffer after opening
+-- See: https://github.com/nvim-neo-tree/neo-tree.nvim
 return {
   "nvim-neo-tree/neo-tree.nvim",
   branch = "v3.x",
@@ -25,6 +29,7 @@ return {
         },
       },
     })
-    vim.keymap.set("n", "<C-n>", ":Neotree filesystem toggle left<CR>")
+    vim.keymap.set("n", "<C-n>", ":Neotree filesystem toggle left<CR>", { desc = "Toggle file tree" })
+    vim.keymap.set("n", "<leader>e", ":Neotree filesystem toggle left<CR>", { desc = "Explorer (neo-tree)" })
   end,
 }
