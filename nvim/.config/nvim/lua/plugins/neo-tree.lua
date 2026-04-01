@@ -19,8 +19,8 @@ return {
       event_handlers = {
         {
           event = "file_opened",
-          handler = function(file_path)
-            vim.cmd("Neotree focus")
+          handler = function()
+            vim.cmd("wincmd p")
           end,
         },
       },
