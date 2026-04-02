@@ -1,0 +1,6 @@
+command = "/opt/homebrew/bin/fish"
+shell-integration = "fish"
+theme = dark:Catppuccin Mocha,light:Catppuccin Latte
+config-file = ?auto/theme.ghostty
+font-size = 15
+font-family = "JetBrainsMono Nerd Font Mono"
