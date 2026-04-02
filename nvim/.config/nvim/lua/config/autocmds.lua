@@ -24,3 +24,12 @@ vim.api.nvim_create_autocmd("FocusGained", {
     end
   end,
 })
+
+-- Reload files changed outside Neovim (e.g. by Claude Code in another tmux pane).
+-- LazyVim has this on FocusGained, but tmux pane switches don't always trigger it.
+vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+  group = vim.api.nvim_create_augroup("auto_checktime", { clear = true }),
+  callback = function()
+    vim.cmd.checktime()
+  end,
+})
