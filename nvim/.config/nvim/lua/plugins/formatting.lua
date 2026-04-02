@@ -6,6 +6,12 @@
 return {
   "stevearc/conform.nvim",
   opts = {
+    formatters = {
+      rubocop = {
+        command = "bundle",
+        prepend_args = { "exec", "rubocop" },
+      },
+    },
     formatters_by_ft = {
       ruby = { "rubocop" },
       javascript = { "prettierd" },
