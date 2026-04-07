@@ -18,19 +18,17 @@ Fish shell, Neovim (LazyVim), tmux, and Ghostty — configured to work together 
 - macOS
 - [Homebrew](https://brew.sh)
 - [GNU Stow](https://www.gnu.org/software/stow/) (`brew install stow`)
-- [Fish shell](https://fishshell.com/) (`brew install fish`)
-- [Neovim](https://neovim.io/) (`brew install neovim`)
-- [tmux](https://github.com/tmux/tmux) (`brew install tmux`)
-- [Ghostty](https://ghostty.org/) terminal emulator
-- [JetBrainsMono Nerd Font](https://www.nerdfonts.com/) (`brew install --cask font-jetbrains-mono-nerd-font`)
-- [Starship](https://starship.rs/) prompt (`brew install starship`)
-- [nodenv](https://github.com/nodenv/nodenv) for Node.js version management
+
+All other dependencies (fish, neovim, tmux, ghostty, fonts, etc.) are declared in the `Brewfile`.
 
 ## Installation
 
 ```bash
 git clone https://github.com/akabiru/dotfiles.git ~/dotfiles
 cd ~/dotfiles
+
+# Install all Homebrew dependencies (formulae, casks, VS Code extensions, etc.)
+brew bundle
 
 # Symlink all packages
 stow fish nvim tmux ghostty
@@ -45,6 +43,25 @@ After stowing, install tmux plugins:
 ```bash
 # Start tmux, then press prefix + I to install plugins via TPM
 tmux
+```
+
+### Brewfile
+
+The `Brewfile` captures the full development environment:
+
+| Category | Examples |
+|----------|----------|
+| **Taps** | `anomalyco/tap`, `withgraphite/tap` |
+| **Formulae** | fish, neovim, tmux, starship, ripgrep, gh, nodenv, rbenv, postgresql, redis, stow, lazygit, lazydocker, ollama, overmind, hledger |
+| **Casks** | Ghostty, Arc, Firefox, Docker Desktop, OrbStack, RubyMine, Zed, VS Code, Spotify, JetBrainsMono Nerd Font |
+| **VS Code Extensions** | Ruby LSP, Claude Code, GitLens, Prettier, ESLint, Docker, Terraform, Go, and more |
+| **Go packages** | gopls, wails |
+| **npm globals** | corepack, yarn |
+
+To update the Brewfile after installing new packages:
+
+```bash
+brew bundle dump --force
 ```
 
 ## Fish Shell
