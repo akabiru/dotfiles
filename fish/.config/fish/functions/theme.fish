@@ -58,14 +58,16 @@ function theme -d "Get or set theme mode (auto/dark/light)"
         tmux source-file ~/.tmux.conf
     end
 
-    # Apply to Ghostty (auto-reloads on config file change)
-    set -l ghostty_theme_file "$HOME/.config/ghostty/theme.ghostty"
-    if test "$mode" = auto
-        echo -n >$ghostty_theme_file
-    else if test "$effective" = light
-        echo "theme = Catppuccin Latte" >$ghostty_theme_file
-    else
-        echo "theme = Catppuccin Mocha" >$ghostty_theme_file
+    # Apply to Ghostty (updates config; reload manually with cmd+shift+,)
+    set -l ghostty_config "$HOME/dotfiles/ghostty/.config/ghostty/config.ghostty"
+    if test -f $ghostty_config
+        if test "$mode" = auto
+            sed -i '' 's/^theme = .*/theme = dark:Catppuccin Mocha,light:Catppuccin Latte/' $ghostty_config
+        else if test "$effective" = light
+            sed -i '' 's/^theme = .*/theme = Catppuccin Latte/' $ghostty_config
+        else
+            sed -i '' 's/^theme = .*/theme = Catppuccin Mocha/' $ghostty_config
+        end
     end
 end
 
