@@ -14,7 +14,6 @@ alias ggpush='git push origin (__git.current_branch)'
 # ── Environment ──────────────────────────────────────────────────────────────
 
 set -x EDITOR nvim
-set -x LEDGER_FILE ~/Developer/akabiru/ledger/2026.journal
 
 # ── PATH ─────────────────────────────────────────────────────────────────────
 

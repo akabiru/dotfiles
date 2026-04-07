@@ -87,7 +87,6 @@ brew bundle dump --force
 | Variable | Value |
 |----------|-------|
 | `EDITOR` | `nvim` |
-| `LEDGER_FILE` | `~/Developer/akabiru/ledger/2026.journal` |
 
 ### PATH Additions
 
