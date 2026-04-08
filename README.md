@@ -157,6 +157,13 @@ LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason
 
 - `lazyvim.plugins.extras.test.core` — test runner infrastructure
 
+### Custom Keymaps
+
+| Keymap | Action |
+|--------|--------|
+| `<leader>fr` | Copy relative file path to clipboard |
+| `<leader>fR` | Copy absolute file path to clipboard |
+
 ### Test Runner (neotest)
 
 | Keymap | Action |
@@ -181,6 +188,8 @@ LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason
 **Config:** `tmux/.tmux.conf`
 
 ### Keybindings
+
+**Prefix:** `Ctrl + Space` (remapped from default `Ctrl + b`)
 
 | Key | Action |
 |-----|--------|
