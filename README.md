@@ -137,7 +137,8 @@ Copy `conf.d/secrets.fish.example` to `conf.d/secrets.fish` and add sensitive en
 | [catppuccin/nvim](https://github.com/catppuccin/nvim) | Colorscheme (Mocha/Latte) — replaces LazyVim's default tokyonight |
 | [conform.nvim](https://github.com/stevearc/conform.nvim) | Code formatting |
 | [nvim-lint](https://github.com/mfussenegger/nvim-lint) | Linting |
-| [neotest](https://github.com/nvim-neotest/neotest) | Test runner with RSpec adapter |
+| [vim-test](https://github.com/vim-test/vim-test) | Test runner (runs tests in tmux pane via vimux) |
+| [vimux](https://github.com/preservim/vimux) | Send commands to a tmux pane from Neovim |
 | [snacks.nvim](https://github.com/folke/snacks.nvim) | File picker/explorer (configured to show hidden files) |
 | [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) | Seamless pane navigation between Neovim and tmux |
 
@@ -153,10 +154,6 @@ Copy `conf.d/secrets.fish.example` to `conf.d/secrets.fish` and add sensitive en
 
 LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason.nvim).
 
-### LazyVim Extras
-
-- `lazyvim.plugins.extras.test.core` — test runner infrastructure
-
 ### Custom Keymaps
 
 | Keymap | Action |
@@ -164,14 +161,15 @@ LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason
 | `<leader>fr` | Copy relative file path to clipboard |
 | `<leader>fR` | Copy absolute file path to clipboard |
 
-### Test Runner (neotest)
+### Test Runner (vim-test + vimux)
 
 | Keymap | Action |
 |--------|--------|
 | `<leader>tn` | Run nearest test |
-| `<leader>tf` | Run current file |
-| `<leader>ts` | Toggle test summary |
-| `<leader>to` | Show test output |
+| `<leader>tf` | Run test file |
+| `<leader>ts` | Run test suite |
+| `<leader>tl` | Run last test |
+| `<leader>tv` | Visit test file |
 
 ### Autocmds
 
