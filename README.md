@@ -158,8 +158,8 @@ LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason
 
 | Keymap | Action |
 |--------|--------|
-| `<leader>fr` | Copy relative file path to clipboard |
-| `<leader>fR` | Copy absolute file path to clipboard |
+| `<leader>yp` | Copy relative file path to clipboard |
+| `<leader>yP` | Copy absolute file path to clipboard |
 
 ### Test Runner (vim-test + vimux)
 
