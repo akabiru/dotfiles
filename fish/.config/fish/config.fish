@@ -22,6 +22,7 @@ fish_add_path /opt/cloud66/bin
 fish_add_path /usr/local/go/bin
 fish_add_path ~/go/bin
 fish_add_path /opt/homebrew/opt/postgresql@17/bin
+fish_add_path ~/.cargo/bin
 
 # ── Tool init (keep last) ───────────────────────────────────────────────────
 
