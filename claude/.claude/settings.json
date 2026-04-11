@@ -1,0 +1,19 @@
+{
+  "env": {
+    "ENABLE_LSP_TOOL": "1"
+  },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "model": "claude-opus-4-6",
+  "enabledPlugins": {
+    "claude-mem@thedotmack": true,
+    "ruby-lsp@claude-plugins-official": true
+  },
+  "alwaysThinkingEnabled": true,
+  "feedbackSurveyState": {
+    "lastShownTime": 1753978088339
+  },
+  "effortLevel": "max"
+}

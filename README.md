@@ -12,6 +12,7 @@ Fish shell, Neovim (LazyVim), tmux, and Ghostty — configured to work together 
 | [`nvim`](#neovim) | LazyVim-based Neovim setup for Ruby/Rails, TypeScript, and Lua |
 | [`tmux`](#tmux) | Terminal multiplexer with Catppuccin theme and vim-style navigation |
 | [`ghostty`](#ghostty) | Ghostty terminal emulator settings |
+| [`claude`](#claude-code) | Claude Code global settings, instructions, and custom agents |
 
 ## Prerequisites
 
@@ -31,7 +32,7 @@ cd ~/dotfiles
 brew bundle
 
 # Symlink all packages
-stow fish nvim tmux ghostty
+stow fish nvim tmux ghostty claude
 
 # Or symlink individually
 stow fish
@@ -236,6 +237,18 @@ LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason
 | Font | JetBrainsMono Nerd Font Mono, 15pt |
 | Theme | Catppuccin Mocha (synced via `theme` command) |
 | Shell integration | Fish |
+
+## Claude Code
+
+**Config:** `claude/.claude/`
+
+Global settings and custom agents for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
+
+| File | Purpose |
+|------|---------|
+| `CLAUDE.md` | Global instructions applied to all projects |
+| `settings.json` | Model, plugins, environment, and preference settings |
+| `agents/rails-code-reviewer.md` | Custom Rails code review agent |
 
 ## Theme System
 
