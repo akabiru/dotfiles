@@ -237,6 +237,7 @@ LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason
 | Font | JetBrainsMono Nerd Font Mono, 15pt |
 | Theme | Catppuccin Mocha (synced via `theme` command) |
 | Shell integration | Fish |
+| Copy on select | Clipboard (auto-copy mouse selections) |
 
 ## Claude Code
 
@@ -249,6 +250,8 @@ Global settings and custom agents for [Claude Code](https://docs.anthropic.com/e
 | `CLAUDE.md` | Global instructions applied to all projects |
 | `settings.json` | Model, plugins, environment, and preference settings |
 | `agents/rails-code-reviewer.md` | Custom Rails code review agent |
+| `agents/frontend-architect.md` | Frontend architecture guidance (Stimulus, Angular, ViewComponents, Turbo) |
+| `agents/local-first-architect.md` | Local-first/CRDT architecture (Yjs, BlockNote, Hocuspocus, ProseMirror) |
 
 ## Theme System
 
