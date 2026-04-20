@@ -253,6 +253,10 @@ Global settings and custom agents for [Claude Code](https://docs.anthropic.com/e
 | `agents/frontend-architect.md` | Frontend architecture guidance (Stimulus, Angular, ViewComponents, Turbo) |
 | `agents/local-first-architect.md` | Local-first/CRDT architecture (Yjs, BlockNote, Hocuspocus, ProseMirror) |
 
+### Notifications
+
+`settings.json` wires a `Notification` hook that fires `terminal-notifier` whenever Claude is idle waiting for input or needs permission — works through tmux, clicking focuses Ghostty. Requires `terminal-notifier` on `PATH`.
+
 ## Theme System
 
 A unified dark/light mode system that keeps Neovim, tmux, and Ghostty in sync.

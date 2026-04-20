@@ -13,5 +13,17 @@
   "alwaysThinkingEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1753978088339
+  },
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "terminal-notifier -title 'Claude Code' -message 'Needs your input' -sound Glass -activate com.mitchellh.ghostty"
+          }
+        ]
+      }
+    ]
   }
 }
