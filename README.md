@@ -141,7 +141,6 @@ Copy `conf.d/secrets.fish.example` to `conf.d/secrets.fish` and add sensitive en
 | [vim-test](https://github.com/vim-test/vim-test) | Test runner (runs tests in tmux pane via vimux) |
 | [vimux](https://github.com/preservim/vimux) | Send commands to a tmux pane from Neovim |
 | [snacks.nvim](https://github.com/folke/snacks.nvim) | File picker/explorer (configured to show hidden files) |
-| [claudecode.nvim](https://github.com/coder/claudecode.nvim) | Claude Code integration — in-editor terminal, send buffer/selection, diff review (requires `claude` CLI on PATH) |
 | [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) | Seamless pane navigation between Neovim and tmux |
 
 ### Language Support
@@ -162,19 +161,6 @@ LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason
 |--------|--------|
 | `<leader>yp` | Copy relative file path to clipboard |
 | `<leader>yP` | Copy absolute file path to clipboard |
-
-### Claude Code (claudecode.nvim)
-
-| Keymap | Action |
-|--------|--------|
-| `<leader>ac` | Toggle Claude terminal |
-| `<leader>af` | Focus Claude terminal |
-| `<leader>ar` | Resume a previous Claude session (`--resume`) |
-| `<leader>aC` | Continue the last Claude session (`--continue`) |
-| `<leader>ab` | Add current buffer to Claude context |
-| `<leader>as` | Send selection to Claude (visual mode) / add file from tree (NvimTree, neo-tree, oil) |
-| `<leader>aa` | Accept Claude's proposed diff |
-| `<leader>ad` | Deny Claude's proposed diff |
 
 ### Test Runner (vim-test + vimux)
 
