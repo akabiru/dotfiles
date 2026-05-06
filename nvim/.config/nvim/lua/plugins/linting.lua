@@ -10,14 +10,32 @@ return {
       ruby = { "rubocop" },
       eruby = { "erb_lint" },
     },
+    -- Override cmd to use `bundle` and prepend `exec <linter>` to the
+    -- upstream args. We re-list the upstream args here because nvim-lint
+    -- (via LazyVim) merges `linters` with vim.tbl_deep_extend, which on
+    -- list-like tables overlays index-by-index — replacing `args` with a
+    -- shorter list silently drops the trailing flags. For rubocop that
+    -- means losing `--format json`, which makes the parser fail with
+    -- "Expected value but found invalid token".
     linters = {
       rubocop = {
         cmd = "bundle",
-        args = { "exec", "rubocop" },
+        args = {
+          "exec",
+          "rubocop",
+          "--format",
+          "json",
+          "--force-exclusion",
+          "--server",
+          "--stdin",
+          function()
+            return vim.api.nvim_buf_get_name(0)
+          end,
+        },
       },
       erb_lint = {
         cmd = "bundle",
-        args = { "exec", "erb_lint" },
+        args = { "exec", "erblint", "--format", "compact" },
       },
     },
   },
