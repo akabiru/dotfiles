@@ -148,13 +148,13 @@ Copy `conf.d/secrets.fish.example` to `conf.d/secrets.fish` and add sensitive en
 
 | Language | LSP | Formatter | Linter |
 |----------|-----|-----------|--------|
-| Ruby/Rails | `ruby_lsp` | `rubocop` (via `bundle exec`) | `rubocop` (via `bundle exec`) |
+| Ruby/Rails | `ruby_lsp` (via rbenv shim) | `rubocop` (via `bundle exec`) | `rubocop` (via `bundle exec`) |
 | ERB | — | — | `erb_lint` (via `bundle exec`) |
 | TypeScript/JavaScript | `ts_ls` | `prettierd` | — |
 | Lua | `lua_ls` | `stylua` | — |
 | HTML/CSS/JSON/YAML/Markdown | — | `prettierd` | — |
 
-LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason.nvim).
+LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason.nvim), except `ruby_lsp`, which is launched via the rbenv shim (`~/.rbenv/shims/ruby-lsp`) so it picks the Ruby version pinned by each project's `.ruby-version`. Install `ruby-lsp` once per rbenv-managed Ruby version: `rbenv shell <version> && gem install ruby-lsp ruby-lsp-rails && rbenv rehash`.
 
 ### Custom Keymaps
 
