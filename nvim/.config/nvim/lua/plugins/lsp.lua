@@ -15,6 +15,13 @@ return {
           mason = false,
           cmd = { vim.fn.expand("~/.rbenv/shims/ruby-lsp") },
         },
+        -- Mason's bundled rubocop is incompatible with newer rubocop
+        -- extension gems (e.g. rubocop-capybara 2.21+ uses an
+        -- `inject_defaults!` signature Mason's pinned rubocop removed).
+        -- We already get rubocop diagnostics via nvim-lint and formatting
+        -- via conform, both through `bundle exec`, plus ruby_lsp surfaces
+        -- offenses too. Disable the standalone rubocop LSP.
+        rubocop = { enabled = false },
       },
     },
   },
@@ -23,7 +30,7 @@ return {
     opts = function(_, opts)
       opts.ensure_installed = opts.ensure_installed or {}
       opts.ensure_installed = vim.tbl_filter(function(s)
-        return s ~= "ruby_lsp"
+        return s ~= "ruby_lsp" and s ~= "rubocop"
       end, opts.ensure_installed)
       return opts
     end,
