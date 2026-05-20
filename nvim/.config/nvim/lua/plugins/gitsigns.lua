@@ -38,8 +38,7 @@ local function open_pr_for_line()
     return
   end
   local pr = data[1]
-  vim.notify(("#%d %s"):format(pr.number, pr.title))
-  vim.ui.open(pr.url)
+  vim.notify(("PR #%d • %s"):format(pr.number, pr.title))
 end
 
 return {
