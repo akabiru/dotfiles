@@ -143,6 +143,7 @@ Copy `conf.d/secrets.fish.example` to `conf.d/secrets.fish` and add sensitive en
 | [snacks.nvim](https://github.com/folke/snacks.nvim) | File picker/explorer (configured to show hidden files) |
 | [claudecode.nvim](https://github.com/coder/claudecode.nvim) | Claude Code integration — in-editor terminal, send buffer/selection, diff review (requires `claude` CLI on PATH) |
 | [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) | Seamless pane navigation between Neovim and tmux |
+| [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | Git change signs in the gutter + inline current-line blame (GitLens-style virtual text at EOL) |
 
 ### Language Support
 
@@ -162,6 +163,8 @@ LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason
 |--------|--------|
 | `<leader>yp` | Copy relative file path to clipboard |
 | `<leader>yP` | Copy absolute file path to clipboard |
+| `<leader>gb` | Show full git blame popup for current line (gitsigns) |
+| `<leader>gB` | Toggle inline current-line blame virtual text (gitsigns) |
 
 ### Claude Code (claudecode.nvim)
 
