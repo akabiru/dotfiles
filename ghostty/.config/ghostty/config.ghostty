@@ -1,6 +1,6 @@
 command = "/opt/homebrew/bin/fish"
 shell-integration = "fish"
-theme = Catppuccin Mocha
+theme = Catppuccin Latte
 font-size = 16
 font-family = "JetBrainsMono Nerd Font Mono"
 font-style = "Medium"
