@@ -135,7 +135,7 @@ Copy `conf.d/secrets.fish.example` to `conf.d/secrets.fish` and add sensitive en
 
 | Plugin | Purpose |
 |--------|---------|
-| [catppuccin/nvim](https://github.com/catppuccin/nvim) | Colorscheme (Mocha/Latte) — replaces LazyVim's default tokyonight |
+| [catppuccin/nvim](https://github.com/catppuccin/nvim) | Colorscheme (Mocha/Latte) — replaces LazyVim's default tokyonight; cursor highlight overridden so it's visible on latte |
 | [conform.nvim](https://github.com/stevearc/conform.nvim) | Code formatting |
 | [nvim-lint](https://github.com/mfussenegger/nvim-lint) | Linting |
 | [vim-test](https://github.com/vim-test/vim-test) | Test runner (runs tests in tmux pane via vimux) |
