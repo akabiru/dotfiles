@@ -234,7 +234,8 @@ LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason
 ### Display
 
 - Active pane border: blue, bold
-- Inactive pane border: grey
+- Inactive pane border: catppuccin `overlay2` (adapts to latte/mocha)
+- Pane border lines: heavy (thicker Unicode box-drawing glyphs)
 - Catppuccin status modules: application, directory, session
 
 ### Plugins
