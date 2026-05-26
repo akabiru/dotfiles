@@ -166,6 +166,7 @@ LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason
 | `<leader>gb` | Show full git blame popup for current line (gitsigns) |
 | `<leader>gB` | Toggle inline current-line blame virtual text (gitsigns) |
 | `<leader>gP` | Show the GitHub PR that introduced the current line — `PR #N • title` (requires `gh` CLI) |
+| `p` / `P` (visual) | Paste over selection without overwriting the unnamed register (clipboard survives) |
 
 ### Claude Code (claudecode.nvim)
 

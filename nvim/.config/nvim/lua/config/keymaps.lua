@@ -14,3 +14,7 @@ vim.keymap.set("n", "<leader>yP", function()
   vim.fn.setreg("+", path)
   vim.notify("Copied absolute path: " .. path)
 end, { desc = "Copy absolute path" })
+
+-- Paste over a visual selection without clobbering the unnamed register
+vim.keymap.set("x", "p", [["_dP]], { desc = "Paste without clobber" })
+vim.keymap.set("x", "P", [["_dP]], { desc = "Paste without clobber" })
