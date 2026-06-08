@@ -45,3 +45,14 @@ vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
     vim.cmd.checktime()
   end,
 })
+
+-- Refresh gitsigns when returning to Neovim so commits made in another pane
+-- (or terminal) update the sign column without a manual :Gitsigns refresh.
+vim.api.nvim_create_autocmd("FocusGained", {
+  group = vim.api.nvim_create_augroup("gitsigns_refresh_on_focus", { clear = true }),
+  callback = function()
+    if package.loaded.gitsigns then
+      require("gitsigns").refresh()
+    end
+  end,
+})

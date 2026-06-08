@@ -56,6 +56,8 @@ return {
   keys = {
     { "<leader>gb", function() require("gitsigns").blame_line({ full = true }) end, desc = "Blame line (full)" },
     { "<leader>gB", function() require("gitsigns").toggle_current_line_blame() end, desc = "Toggle inline blame" },
-    { "<leader>gP", open_pr_for_line, desc = "Open GitHub PR for current line" },
+    -- NOTE: <leader>gP is taken by LazyVim's snacks_picker extra (GitHub PRs);
+    -- this line-PR lookup lives on <leader>gL ("PR for Line") to avoid the clash.
+    { "<leader>gL", open_pr_for_line, desc = "Open GitHub PR for current line" },
   },
 }

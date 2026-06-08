@@ -144,6 +144,9 @@ Copy `conf.d/secrets.fish.example` to `conf.d/secrets.fish` and add sensitive en
 | [claudecode.nvim](https://github.com/coder/claudecode.nvim) | Claude Code integration — in-editor terminal, send buffer/selection, diff review (requires `claude` CLI on PATH) |
 | [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) | Seamless pane navigation between Neovim and tmux |
 | [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | Git change signs in the gutter + inline current-line blame (GitLens-style virtual text at EOL) |
+| [git-conflict.nvim](https://github.com/akinsho/git-conflict.nvim) | VSCode-style inline merge conflict resolution — accept ours/theirs/both/none directly in the buffer |
+| [diffview.nvim](https://github.com/sindrets/diffview.nvim) | 3-way merge view (base/ours/theirs), rich diffs, and file-history browser |
+| [grug-far.nvim](https://github.com/MagicDuck/grug-far.nvim) | Project-wide search and replace with live preview |
 
 ### Language Support
 
@@ -165,7 +168,14 @@ LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason
 | `<leader>yP` | Copy absolute file path to clipboard |
 | `<leader>gb` | Show full git blame popup for current line (gitsigns) |
 | `<leader>gB` | Toggle inline current-line blame virtual text (gitsigns) |
-| `<leader>gP` | Show the GitHub PR that introduced the current line — `PR #N • title` (requires `gh` CLI) |
+| `<leader>gL` | Show the GitHub PR that introduced the current line — `PR #N • title` (requires `gh` CLI) |
+| `co` / `ct` / `cb` / `c0` | In a conflicted file: accept ours / theirs / both / none (git-conflict) |
+| `]x` / `[x` | Jump to next / previous merge conflict (git-conflict) |
+| `<leader>gxo` / `gxt` / `gxb` / `gx0` | Accept ours / theirs / both / none conflict (git-conflict) |
+| `<leader>gxl` | List all conflicts in the quickfix window (git-conflict) |
+| `<leader>gvo` | Open Diffview (3-way merge view during a merge, otherwise diff) |
+| `<leader>gvc` | Close Diffview |
+| `<leader>gvh` / `gvH` | Diffview file history (current file / whole repo) |
 | `p` / `P` (visual) | Paste over selection without overwriting the unnamed register (clipboard survives) |
 
 ### Claude Code (claudecode.nvim)
@@ -195,6 +205,7 @@ LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason
 
 - **Theme sync** — syncs `vim.o.background` with macOS appearance on `FocusGained`, respects `~/.theme-mode` override
 - **Auto-reload** — reloads files changed externally (e.g., by Claude Code in another tmux pane) on cursor move
+- **Gitsigns refresh** — re-runs `Gitsigns.refresh()` on `FocusGained` so commits made in another pane update the sign column automatically
 
 ### Options
 
