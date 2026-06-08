@@ -147,6 +147,7 @@ Copy `conf.d/secrets.fish.example` to `conf.d/secrets.fish` and add sensitive en
 | [git-conflict.nvim](https://github.com/akinsho/git-conflict.nvim) | VSCode-style inline merge conflict resolution — accept ours/theirs/both/none directly in the buffer |
 | [diffview.nvim](https://github.com/sindrets/diffview.nvim) | 3-way merge view (base/ours/theirs), rich diffs, and file-history browser |
 | [grug-far.nvim](https://github.com/MagicDuck/grug-far.nvim) | Project-wide search and replace with live preview |
+| [vim-wakatime](https://github.com/wakatime/vim-wakatime) | Automatic time tracking to the WakaTime dashboard (needs an API key in `~/.wakatime.cfg`, prompted on first launch) |
 
 ### Language Support
 
