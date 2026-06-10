@@ -148,6 +148,7 @@ Copy `conf.d/secrets.fish.example` to `conf.d/secrets.fish` and add sensitive en
 | [diffview.nvim](https://github.com/sindrets/diffview.nvim) | 3-way merge view (base/ours/theirs), rich diffs, and file-history browser |
 | [grug-far.nvim](https://github.com/MagicDuck/grug-far.nvim) | Project-wide search and replace with live preview |
 | [vim-wakatime](https://github.com/wakatime/vim-wakatime) | Automatic time tracking to the WakaTime dashboard (needs an API key in `~/.wakatime.cfg`, prompted on first launch) |
+| [lazydocker.nvim](https://github.com/mgierada/lazydocker.nvim) | Lazydocker TUI in a floating window — manage containers, images, logs, and volumes (requires the `lazydocker` binary) |
 
 ### Language Support
 
@@ -171,6 +172,7 @@ LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason
 | `<leader>gB` | Toggle inline current-line blame virtual text (gitsigns) |
 | `<leader>gL` | Preview the GitHub PR that introduced the current line — `PR #N • title` (requires `gh` CLI) |
 | `<leader>gO` | Preview that PR and open it in the browser (requires `gh` CLI) |
+| `<leader>D` | Open Lazydocker in a floating window (lazydocker.nvim) |
 | `co` / `ct` / `cb` / `c0` | In a conflicted file: accept ours / theirs / both / none (git-conflict) |
 | `]x` / `[x` | Jump to next / previous merge conflict (git-conflict) |
 | `<leader>gxo` / `gxt` / `gxb` / `gx0` | Accept ours / theirs / both / none conflict (git-conflict) |
