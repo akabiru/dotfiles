@@ -169,7 +169,8 @@ LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason
 | `<leader>yP` | Copy absolute file path to clipboard |
 | `<leader>gb` | Show full git blame popup for current line (gitsigns) |
 | `<leader>gB` | Toggle inline current-line blame virtual text (gitsigns) |
-| `<leader>gL` | Show the GitHub PR that introduced the current line — `PR #N • title` (requires `gh` CLI) |
+| `<leader>gL` | Preview the GitHub PR that introduced the current line — `PR #N • title` (requires `gh` CLI) |
+| `<leader>gO` | Preview that PR and open it in the browser (requires `gh` CLI) |
 | `co` / `ct` / `cb` / `c0` | In a conflicted file: accept ours / theirs / both / none (git-conflict) |
 | `]x` / `[x` | Jump to next / previous merge conflict (git-conflict) |
 | `<leader>gxo` / `gxt` / `gxb` / `gx0` | Accept ours / theirs / both / none conflict (git-conflict) |

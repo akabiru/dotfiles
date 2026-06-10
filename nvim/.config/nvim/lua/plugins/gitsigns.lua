@@ -1,6 +1,8 @@
 -- Enable inline current-line git blame (GitLens-style virtual text at EOL)
 -- See: https://github.com/lewis6991/gitsigns.nvim
-local function open_pr_for_line()
+-- Resolve the merged PR that introduced the line under the cursor.
+-- Returns a { number, title, url } table, or nil (after notifying why).
+local function pr_for_line()
   local file = vim.fn.expand("%:p")
   if file == "" then
     return
@@ -37,8 +39,19 @@ local function open_pr_for_line()
     vim.notify(("No merged PR found for %s"):format(sha:sub(1, 7)), vim.log.levels.INFO)
     return
   end
-  local pr = data[1]
+  return data[1]
+end
+
+-- Preview the PR for the current line; optionally open it in the browser.
+local function show_pr_for_line(opts)
+  local pr = pr_for_line()
+  if not pr then
+    return
+  end
   vim.notify(("PR #%d • %s"):format(pr.number, pr.title))
+  if opts and opts.open then
+    vim.ui.open(pr.url)
+  end
 end
 
 return {
@@ -57,7 +70,8 @@ return {
     { "<leader>gb", function() require("gitsigns").blame_line({ full = true }) end, desc = "Blame line (full)" },
     { "<leader>gB", function() require("gitsigns").toggle_current_line_blame() end, desc = "Toggle inline blame" },
     -- NOTE: <leader>gP is taken by LazyVim's snacks_picker extra (GitHub PRs);
-    -- this line-PR lookup lives on <leader>gL ("PR for Line") to avoid the clash.
-    { "<leader>gL", open_pr_for_line, desc = "Open GitHub PR for current line" },
+    -- the line-PR lookup lives on <leader>gL/<leader>gO to avoid the clash.
+    { "<leader>gL", function() show_pr_for_line() end, desc = "Preview GitHub PR for current line" },
+    { "<leader>gO", function() show_pr_for_line({ open = true }) end, desc = "Open GitHub PR for current line in browser" },
   },
 }
