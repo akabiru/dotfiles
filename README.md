@@ -149,6 +149,7 @@ Copy `conf.d/secrets.fish.example` to `conf.d/secrets.fish` and add sensitive en
 | [grug-far.nvim](https://github.com/MagicDuck/grug-far.nvim) | Project-wide search and replace with live preview |
 | [vim-wakatime](https://github.com/wakatime/vim-wakatime) | Automatic time tracking to the WakaTime dashboard (needs an API key in `~/.wakatime.cfg`, prompted on first launch) |
 | [lazydocker.nvim](https://github.com/mgierada/lazydocker.nvim) | Lazydocker TUI in a floating window — manage containers, images, logs, and volumes (requires the `lazydocker` binary) |
+| [xcodebuild.nvim](https://github.com/wojciech-kulik/xcodebuild.nvim) | Build, run, test & debug iOS/macOS/watchOS/tvOS apps — manages simulators, schemes, tests, code coverage, and nvim-dap debugging (requires Xcode + the Homebrew Swift tooling; see iOS / Swift below) |
 
 ### Language Support
 
@@ -159,8 +160,42 @@ Copy `conf.d/secrets.fish.example` to `conf.d/secrets.fish` and add sensitive en
 | TypeScript/JavaScript | `ts_ls` | `prettierd` | — |
 | Lua | `lua_ls` | `stylua` | — |
 | HTML/CSS/JSON/YAML/Markdown | — | `prettierd` | — |
+| Swift/iOS | `sourcekit` (Xcode toolchain) | `swiftformat` | `swiftlint` |
 
-LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason.nvim), except `ruby_lsp`, which is launched via the rbenv shim (`~/.rbenv/shims/ruby-lsp`) so it picks the Ruby version pinned by each project's `.ruby-version`. Install `ruby-lsp` once per rbenv-managed Ruby version: `rbenv shell <version> && gem install ruby-lsp ruby-lsp-rails && rbenv rehash`.
+LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason.nvim), except: `ruby_lsp`, launched via the rbenv shim (`~/.rbenv/shims/ruby-lsp`) so it picks the Ruby version pinned by each project's `.ruby-version` (install once per rbenv-managed Ruby: `rbenv shell <version> && gem install ruby-lsp ruby-lsp-rails && rbenv rehash`); and `sourcekit`, which ships with the active Xcode toolchain and can't be installed via Mason. `swiftformat`/`swiftlint`/`prettierd`/`stylua` come from Homebrew or Mason as listed.
+
+### iOS / Swift (xcodebuild.nvim)
+
+Full iOS/macOS development without leaving Neovim: code intelligence via `sourcekit-lsp`, formatting/linting via `swiftformat`/`swiftlint`, and build/run/test/debug via [xcodebuild.nvim](https://github.com/wojciech-kulik/xcodebuild.nvim) (driving the `xcodebuild` CLI, `xcrun simctl` simulators, and `nvim-dap`).
+
+**One-time setup:**
+
+1. Install **full Xcode** (App Store), then point the toolchain at it (not the Command Line Tools): `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`. Verify with `xcodebuild -version`.
+2. Install the Homebrew tooling: `brew bundle` pulls `xcbeautify`, `xcode-build-server`, `swiftformat`, `swiftlint`, and `xcodegen`.
+3. **Per project**, generate a `buildServer.json` so `sourcekit-lsp` understands the Xcode project (re-run after scheme/target changes):
+   ```sh
+   xcode-build-server config -scheme <Scheme> -project <Name>.xcodeproj
+   # or, for a workspace:
+   xcode-build-server config -scheme <Scheme> -workspace <Name>.xcworkspace
+   ```
+
+Debugging uses the toolchain's native LLDB on Xcode 16+ (no codelldb needed) via LazyVim's dap stack, so `<leader>d…` debug keymaps (breakpoints, stepping, dap-ui) are also available.
+
+| Keymap | Action |
+|--------|--------|
+| `<leader>Xf` | Show all xcodebuild actions (picker) |
+| `<leader>Xb` | Build project |
+| `<leader>Xr` | Build & run |
+| `<leader>Xt` | Run tests |
+| `<leader>XT` | Run current test class |
+| `<leader>Xl` | Toggle build/run logs |
+| `<leader>Xs` | Select scheme |
+| `<leader>Xd` | Select device / simulator |
+| `<leader>Xc` | Toggle code coverage |
+| `<leader>Xn` | Build & debug |
+| `<leader>XN` | Debug without building |
+
+**Caveats:** no live SwiftUI preview canvas — xcodebuild.nvim renders snapshot-style previews (via snacks.nvim), not Xcode's interactive canvas. Deploying to a **physical device** needs code signing plus `ios-deploy`/`pymobiledevice3` (not installed by default); simulator workflows need none of that.
 
 ### Custom Keymaps
 

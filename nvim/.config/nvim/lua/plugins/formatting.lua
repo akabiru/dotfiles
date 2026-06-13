@@ -1,6 +1,6 @@
 -- Formatting: Code formatters via conform.nvim (LazyVim's default formatter)
 -- <leader>cf to format buffer (LazyVim default keymap)
--- rubocop for Ruby, prettierd for JS/TS/web, stylua for Lua
+-- rubocop for Ruby, prettierd for JS/TS/web, swiftformat for Swift, stylua for Lua
 -- prettierd is auto-installed via the mason.nvim spec below (ensure_installed).
 -- See: https://github.com/stevearc/conform.nvim
 return {
@@ -24,6 +24,7 @@ return {
         json = { "prettierd" },
         yaml = { "prettierd" },
         markdown = { "prettierd" },
+        swift = { "swiftformat" },
         lua = { "stylua" },
       },
     },

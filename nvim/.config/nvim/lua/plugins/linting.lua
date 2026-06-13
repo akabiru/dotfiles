@@ -1,7 +1,7 @@
 -- Linting: Code linters via nvim-lint (LazyVim's default linter)
 -- Diagnostics appear inline as you edit
--- rubocop for Ruby, erb_lint for ERB templates
--- Both use `bundle exec` to pick up the project's gem versions
+-- rubocop for Ruby, erb_lint for ERB templates, swiftlint for Swift
+-- The Ruby/ERB linters use `bundle exec` to pick up the project's gem versions
 -- See: https://github.com/mfussenegger/nvim-lint
 return {
   "mfussenegger/nvim-lint",
@@ -9,6 +9,9 @@ return {
     linters_by_ft = {
       ruby = { "rubocop" },
       eruby = { "erb_lint" },
+      -- swiftlint runs standalone (from Homebrew), no bundle wrapper needed.
+      -- Picks up a project's .swiftlint.yml automatically when present.
+      swift = { "swiftlint" },
     },
     -- Override cmd to use `bundle` and prepend `exec <linter>` to the
     -- upstream args. We re-list the upstream args here because nvim-lint
