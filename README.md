@@ -12,7 +12,7 @@ Fish shell, Neovim (LazyVim), tmux, and Ghostty — configured to work together 
 | [`nvim`](#neovim) | LazyVim-based Neovim setup for Ruby/Rails, TypeScript, and Lua |
 | [`tmux`](#tmux) | Terminal multiplexer with Catppuccin theme and vim-style navigation |
 | [`ghostty`](#ghostty) | Ghostty terminal emulator settings |
-| [`claude`](#claude-code) | Claude Code global settings, instructions, and custom agents |
+| [`claude`](#claude-code) | Claude Code global settings, instructions, custom agents, and slash commands |
 
 ## Prerequisites
 
@@ -278,7 +278,7 @@ LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason
 
 **Config:** `claude/.claude/`
 
-Global settings and custom agents for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
+Global settings, custom agents, and slash commands for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
 
 | File | Purpose |
 |------|---------|
@@ -287,6 +287,19 @@ Global settings and custom agents for [Claude Code](https://docs.anthropic.com/e
 | `agents/rails-code-reviewer.md` | Custom Rails code review agent |
 | `agents/frontend-architect.md` | Frontend architecture guidance (Stimulus, Angular, ViewComponents, Turbo) |
 | `agents/local-first-architect.md` | Local-first/CRDT architecture (Yjs, BlockNote, Hocuspocus, ProseMirror) |
+| `commands/drive.md` | `/drive` slash command — hand the keyboard to Claude (pairing Mode 2) |
+| `commands/navigate.md` | `/navigate` slash command — Claude drops to navigator (pairing Mode 1) |
+
+### Custom Commands
+
+Slash commands in `commands/` toggle the pair-programming workflow defined in `CLAUDE.md` (the **Collaboration Model**). By default you drive and Claude navigates; these switch who holds the keyboard.
+
+| Command | Action |
+|---------|--------|
+| `/drive` | Hand the keyboard to Claude (Mode 2) — it plans first, then implements one reviewable chunk at a time, pausing at each checkpoint for review |
+| `/navigate` | Take the keyboard back (Mode 1) — you write the code; Claude reviews your diffs, suggests alternatives, and researches or drafts tests on request |
+
+Verbal triggers work too ("you drive" / "I'll drive"). Any `.md` file added to `commands/` becomes a slash command automatically.
 
 ### Notifications
 
