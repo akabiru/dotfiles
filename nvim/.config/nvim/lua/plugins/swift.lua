@@ -20,13 +20,10 @@
 -- group. <leader>Xf opens the picker listing every available action.
 -- See: https://github.com/wojciech-kulik/xcodebuild.nvim
 return {
-  -- Debugging stack for xcodebuild.nvim. On Xcode 16+ it uses the toolchain's
-  -- native LLDB (no codelldb needed), but still needs an nvim-dap client + UI.
-  -- This is LazyVim's standard dap setup (nvim-dap + dap-ui + virtual text +
-  -- mason-nvim-dap) and owns nvim-dap's config correctly — hand-wiring nvim-dap
-  -- raw makes lazy.nvim try to call a non-existent dap.setup(). Adds <leader>d.
-  { import = "lazyvim.plugins.extras.dap.core" },
-
+  -- The nvim-dap debugging stack this plugin drives (native LLDB on Xcode 16+,
+  -- no codelldb) comes from LazyVim's dap.core extra, imported in
+  -- config/lazy.lua — LazyVim requires extras to be imported there, before your
+  -- own plugins, not from within a plugins/ file.
   {
     "wojciech-kulik/xcodebuild.nvim",
     dependencies = {

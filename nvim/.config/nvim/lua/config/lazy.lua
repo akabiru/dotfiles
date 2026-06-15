@@ -19,6 +19,10 @@ require("lazy").setup({
     -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
     -- import LazyVim extras
+    -- nvim-dap stack for xcodebuild.nvim debugging (see plugins/swift.lua).
+    -- Extras must be imported here, between lazyvim.plugins and your own
+    -- plugins, or LazyVim's import-order check warns.
+    { import = "lazyvim.plugins.extras.dap.core" },
     -- import/override with your plugins
     { import = "plugins" },
   },
