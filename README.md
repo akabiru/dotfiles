@@ -263,6 +263,8 @@ Once a debug session is running (`<leader>Xn`), the general `<leader>d…` keyma
 | `<leader>tl` | Run last test |
 | `<leader>tv` | Visit test file |
 
+Tests run in a tmux pane via vimux. In dockerized OpenProject-style repos (a `bin/compose` script next to a `docker-compose.yml`), the rspec runner is auto-switched to `bin/compose rspec` so specs run inside the container; every other Ruby project keeps the default binstub.
+
 ### Autocmds
 
 - **Theme sync** — syncs `vim.o.background` with macOS appearance on `FocusGained`, respects `~/.theme-mode` override
