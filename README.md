@@ -179,7 +179,7 @@ Full iOS/macOS development without leaving Neovim: code intelligence via `source
    xcode-build-server config -scheme <Scheme> -workspace <Name>.xcworkspace
    ```
 
-Debugging uses the toolchain's native LLDB on Xcode 16+ (no codelldb needed) via LazyVim's dap stack, so `<leader>d…` debug keymaps (breakpoints, stepping, dap-ui) are also available.
+Debugging uses the toolchain's native LLDB on Xcode 16+ (no codelldb needed) via LazyVim's dap stack.
 
 | Keymap | Action |
 |--------|--------|
@@ -194,6 +194,29 @@ Debugging uses the toolchain's native LLDB on Xcode 16+ (no codelldb needed) via
 | `<leader>Xc` | Toggle code coverage |
 | `<leader>Xn` | Build & debug |
 | `<leader>XN` | Debug without building |
+
+Once a debug session is running (`<leader>Xn`), the general `<leader>d…` keymaps from LazyVim's dap stack control it (these work for any nvim-dap session, not just Swift):
+
+| Keymap | Action |
+|--------|--------|
+| `<leader>dc` | Run / continue |
+| `<leader>da` | Run with args |
+| `<leader>db` | Toggle breakpoint |
+| `<leader>dB` | Breakpoint condition |
+| `<leader>di` | Step into |
+| `<leader>dO` | Step over |
+| `<leader>do` | Step out |
+| `<leader>dC` | Run to cursor |
+| `<leader>dg` | Go to line (no execute) |
+| `<leader>dj` / `dk` | Move down / up the call stack |
+| `<leader>dl` | Run last |
+| `<leader>dP` | Pause |
+| `<leader>dt` | Terminate |
+| `<leader>dr` | Toggle REPL |
+| `<leader>ds` | Session |
+| `<leader>dw` | Widgets (hover) |
+| `<leader>du` | Toggle dap-ui |
+| `<leader>de` | Eval (normal / visual) |
 
 **Caveats:** no live SwiftUI preview canvas — xcodebuild.nvim renders snapshot-style previews (via snacks.nvim), not Xcode's interactive canvas. Deploying to a **physical device** needs code signing plus `ios-deploy`/`pymobiledevice3` (not installed by default); simulator workflows need none of that.
 
