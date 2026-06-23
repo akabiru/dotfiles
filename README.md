@@ -130,6 +130,7 @@ Copy `conf.d/secrets.fish.example` to `conf.d/secrets.fish` and add sensitive en
 
 **Config:** `nvim/.config/nvim/`
 **Framework:** [LazyVim](https://www.lazyvim.org/)
+**Cheatsheet:** [Navigation & motions](nvim/.config/nvim/docs/navigation.md) — line/word motions, jumplist vs. changelist, the LazyVim "root dir" gotcha, and tmux pane/window/session jumps
 
 ### Plugins
 
