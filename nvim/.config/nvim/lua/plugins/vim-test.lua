@@ -30,8 +30,75 @@ return {
       desc = "Use `bin/compose rspec` inside dockerized OpenProject repos",
     })
 
+    -- OpenProject's frontend Vitest specs only resolve through the Angular
+    -- esbuild builder (`ng test`): it wires up the `core-*` tsconfig path
+    -- aliases and the test setup. vim-test would shell out to bare vitest and
+    -- fail. So run the spec through the builder, the same way `set_ruby_runner`
+    -- routes rspec. jsdom can't be forced from the CLI (the builder schema
+    -- requires >=1 browser), so pin a single headless chromium.
+    --
+    -- Returns (repo_root, path_relative_to_frontend) for an OpenProject
+    -- frontend spec, or nil to let vim-test handle the file normally.
+    local function op_frontend_spec()
+      local file = vim.api.nvim_buf_get_name(0)
+      if not file:match("%.spec%.ts$") then
+        return nil
+      end
+
+      local angular = vim.fs.find("angular.json", { upward = true, path = vim.fs.dirname(file) })[1]
+      if not angular then
+        return nil
+      end
+      local frontend = vim.fs.dirname(angular)
+
+      -- Gate strictly to OpenProject: its frontend package names itself, so this
+      -- never fires in another Angular repo that happens to share the layout.
+      -- The marker is intrinsic to the checkout, so it also holds in worktrees
+      -- and any clone location.
+      local pkg = frontend .. "/package.json"
+      if vim.fn.filereadable(pkg) ~= 1 then
+        return nil
+      end
+      if not table.concat(vim.fn.readfile(pkg), "\n"):find('"openproject-frontend"', 1, true) then
+        return nil
+      end
+
+      local repo = vim.fs.dirname(frontend) -- frontend/ sits directly under the repo root
+      return repo, file:sub(#frontend + 2) -- strip "<frontend>/" prefix
+    end
+
+    local function run_test_file()
+      local repo, rel = op_frontend_spec()
+      if not repo then
+        vim.cmd("TestFile") -- default vim-test behaviour for every other project
+        return
+      end
+
+      -- `config/database.yml` is the local-setup marker (the docker setup
+      -- forbids it, which is how bin/compose itself tells the two apart). Local:
+      -- run on the host. Docker: exec into the running `frontend` container.
+      local cmd
+      if vim.fn.filereadable(repo .. "/config/database.yml") == 1 then
+        cmd = string.format(
+          "cd %s/frontend && npm test -- --include=%s --browsers=chromium --headless",
+          repo,
+          rel
+        )
+      else
+        -- bin/compose resolves a relative compose file, so it must run from the
+        -- repo root; the container WORKDIR is already `frontend/`.
+        cmd = string.format(
+          "cd %s && bin/compose exec frontend bash -lc "
+            .. "'npm test -- --include=%s --browsers=chromium --headless'",
+          repo,
+          rel
+        )
+      end
+      vim.fn.VimuxRunCommand(cmd)
+    end
+
     vim.keymap.set("n", "<leader>tn", ":TestNearest<CR>", { desc = "Run nearest test" })
-    vim.keymap.set("n", "<leader>tf", ":TestFile<CR>", { desc = "Run test file" })
+    vim.keymap.set("n", "<leader>tf", run_test_file, { desc = "Run test file" })
     vim.keymap.set("n", "<leader>ts", ":TestSuite<CR>", { desc = "Run test suite" })
     vim.keymap.set("n", "<leader>tl", ":TestLast<CR>", { desc = "Run last test" })
     vim.keymap.set("n", "<leader>tv", ":TestVisit<CR>", { desc = "Visit test file" })
