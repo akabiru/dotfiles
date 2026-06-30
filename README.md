@@ -14,6 +14,7 @@ Fish shell, Neovim (LazyVim), tmux, and Ghostty — configured to work together 
 | [`ghostty`](#ghostty) | Ghostty terminal emulator settings |
 | [`claude`](#claude-code) | Claude Code global settings, instructions, custom agents, and slash commands |
 | [`lazydocker`](#lazydocker) | Lazydocker custom commands (e.g. recreate backend/frontend/test services) |
+| [`lazygit`](#lazygit) | Lazygit config (main branch names for upstream detection) |
 
 ## Prerequisites
 
@@ -33,7 +34,7 @@ cd ~/dotfiles
 brew bundle
 
 # Symlink all packages
-stow fish nvim tmux ghostty claude lazydocker
+stow fish nvim tmux ghostty claude lazydocker lazygit
 
 # Or symlink individually
 stow fish
@@ -89,6 +90,7 @@ brew bundle dump --force
 | Variable | Value |
 |----------|-------|
 | `EDITOR` | `nvim` |
+| `XDG_CONFIG_HOME` | `~/.config` (points XDG-aware tools like lazydocker and lazygit at `~/.config` instead of the macOS default `~/Library/Application Support`) |
 
 ### PATH Additions
 
@@ -369,7 +371,9 @@ Verbal triggers work too ("you drive" / "I'll drive"). Any `.md` file added to `
 
 ## Lazydocker
 
-**Config:** `lazydocker/.config/lazydocker/config.yml` (read from `~/.config/lazydocker/config.yml`).
+**Config:** `lazydocker/.config/lazydocker/config.yml`.
+
+On macOS lazydocker reads `~/Library/Application Support/lazydocker/` by default; the `XDG_CONFIG_HOME` export (see [Environment](#environment)) redirects it to `~/.config/lazydocker/config.yml` so the config lives with the dotfiles.
 
 Lazydocker custom commands are menu-driven; they cannot be bound to their own key. On the **Services** panel, press `c` ("run predefined custom command") and pick the entry (with a single command this is effectively `c` then Enter).
 
@@ -380,6 +384,12 @@ Lazydocker has no per-repo config, so this command appears in every project's me
 | Op: recreate backend + frontend + backend-test | `docker compose up -d backend frontend backend-test --force-recreate` |
 
 Open the lazydocker TUI from Neovim with `<leader>D` (see [Custom Keymaps](#custom-keymaps)).
+
+## Lazygit
+
+**Config:** `lazygit/.config/lazygit/config.yml`.
+
+Like lazydocker, lazygit defaults to `~/Library/Application Support/lazygit/` on macOS and is redirected to `~/.config/lazygit/config.yml` by `XDG_CONFIG_HOME`. Currently sets `git.mainBranches` (`main`, `master`, `dev`) so upstream/recency detection works against the right base branch.
 
 ## Theme System
 

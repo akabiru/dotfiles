@@ -15,6 +15,10 @@ alias ggpush='git push origin (__git.current_branch)'
 
 set -x EDITOR nvim
 
+# Point XDG-aware tools (lazydocker, lazygit) at ~/.config instead of the macOS
+# default ~/Library/Application Support, so their configs live with the dotfiles.
+set -gx XDG_CONFIG_HOME $HOME/.config
+
 # ── PATH ─────────────────────────────────────────────────────────────────────
 
 fish_add_path /usr/local/bin
