@@ -1,0 +1,12 @@
+# Lazydocker config. Read from ~/.config/lazydocker/config.yml on macOS
+# (XDG_CONFIG_HOME, defaulting to ~/.config). Managed via stow.
+#
+# Custom commands are menu-driven, not directly bindable to a key. On the
+# Services panel press `c` ("run predefined custom command"), then pick the
+# entry. With a single command defined this is effectively `c` then Enter.
+customCommands:
+  services:
+    - name: "Op: recreate backend + frontend + backend-test"
+      command: "{{ .DockerCompose }} up -d backend frontend backend-test --force-recreate"
+      serviceNames: [] # empty = available no matter which service row is selected
+      attach: false # set true to watch the recreate output live in a subprocess

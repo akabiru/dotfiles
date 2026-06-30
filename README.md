@@ -13,6 +13,7 @@ Fish shell, Neovim (LazyVim), tmux, and Ghostty — configured to work together 
 | [`tmux`](#tmux) | Terminal multiplexer with Catppuccin theme and vim-style navigation |
 | [`ghostty`](#ghostty) | Ghostty terminal emulator settings |
 | [`claude`](#claude-code) | Claude Code global settings, instructions, custom agents, and slash commands |
+| [`lazydocker`](#lazydocker) | Lazydocker custom commands (e.g. recreate backend/frontend/test services) |
 
 ## Prerequisites
 
@@ -32,7 +33,7 @@ cd ~/dotfiles
 brew bundle
 
 # Symlink all packages
-stow fish nvim tmux ghostty claude
+stow fish nvim tmux ghostty claude lazydocker
 
 # Or symlink individually
 stow fish
@@ -365,6 +366,20 @@ Verbal triggers work too ("you drive" / "I'll drive"). Any `.md` file added to `
 ### Notifications
 
 `settings.json` wires a `Notification` hook that fires `terminal-notifier` whenever Claude is idle waiting for input or needs permission — works through tmux, clicking focuses Ghostty. Requires `terminal-notifier` on `PATH`.
+
+## Lazydocker
+
+**Config:** `lazydocker/.config/lazydocker/config.yml` (read from `~/.config/lazydocker/config.yml`).
+
+Lazydocker custom commands are menu-driven; they cannot be bound to their own key. On the **Services** panel, press `c` ("run predefined custom command") and pick the entry (with a single command this is effectively `c` then Enter).
+
+Lazydocker has no per-repo config, so this command appears in every project's menu. The `Op:` prefix is just a label marking it as OpenProject-specific; it only does something useful in a compose project that has those services.
+
+| Command | Runs |
+|---------|------|
+| Op: recreate backend + frontend + backend-test | `docker compose up -d backend frontend backend-test --force-recreate` |
+
+Open the lazydocker TUI from Neovim with `<leader>D` (see [Custom Keymaps](#custom-keymaps)).
 
 ## Theme System
 
