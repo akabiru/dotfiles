@@ -382,6 +382,8 @@ Lazydocker has no per-repo config, so this command appears in every project's me
 | Command | Runs |
 |---------|------|
 | Op: recreate backend + frontend + backend-test | `docker compose up -d backend frontend backend-test --force-recreate` |
+| Op: setup backend + frontend services | `docker compose run --rm backend setup && docker compose run --rm frontend npm i` |
+| Op: restart backend + frontend services | `docker compose up -d backend frontend --force-recreate` |
 
 Open the lazydocker TUI from Neovim with `<leader>D` (see [Custom Keymaps](#custom-keymaps)).
 
