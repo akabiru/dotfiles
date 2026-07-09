@@ -379,11 +379,13 @@ Lazydocker custom commands are menu-driven; they cannot be bound to their own ke
 
 Lazydocker has no per-repo config, so this command appears in every project's menu. The `Op:` prefix is just a label marking it as OpenProject-specific; it only does something useful in a compose project that has those services.
 
+The commands route through OpenProject's `bin/compose` wrapper instead of raw `docker compose`, so they inherit its `.env` loading, `docker-compose.override.yml` inclusion, `config/database.yml` guard, and `docker-compose` vs `docker compose` detection. Because `bin/compose` is a relative path, launch lazydocker from the openproject repo root (the cwd these commands already assumed).
+
 | Command | Runs |
 |---------|------|
-| Op: recreate backend + frontend + backend-test | `docker compose up -d backend frontend backend-test --force-recreate` |
-| Op: setup backend + frontend services | `docker compose run --rm backend setup && docker compose run --rm frontend npm i` |
-| Op: restart backend + frontend services | `docker compose up -d backend frontend --force-recreate` |
+| Op: recreate backend + frontend + backend-test | `bin/compose up -d backend frontend backend-test --force-recreate` |
+| Op: setup backend + frontend services | `bin/compose setup` (backend setup + frontend & hocuspocus `npm install`) |
+| Op: restart backend + frontend services | `bin/compose up -d backend frontend --force-recreate` |
 
 Open the lazydocker TUI from Neovim with `<leader>D` (see [Custom Keymaps](#custom-keymaps)).
 

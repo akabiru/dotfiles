@@ -7,14 +7,14 @@
 customCommands:
   services:
     - name: "Op: recreate backend + frontend + backend-test"
-      command: "{{ .DockerCompose }} up -d backend frontend backend-test --force-recreate"
+      command: "bin/compose up -d backend frontend backend-test --force-recreate"
       serviceNames: [] # empty = available no matter which service row is selected
       attach: false # set true to watch the recreate output live in a subprocess
     - name: "Op: setup backend + frontend services"
-      command: "{{ .DockerCompose }} run --rm backend setup && {{ .DockerCompose }} run --rm frontend npm i"
+      command: "bin/compose setup" # backend setup + frontend & hocuspocus npm install
       serviceNames: []
-      attach: true # setup + npm i are long-running; watch the output live
+      attach: true # setup is long-running; watch the output live
     - name: "Op: restart backend + frontend services"
-      command: "{{ .DockerCompose }} up -d backend frontend --force-recreate"
+      command: "bin/compose up -d backend frontend --force-recreate"
       serviceNames: []
       attach: false
