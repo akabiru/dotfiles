@@ -168,6 +168,8 @@ Copy `conf.d/secrets.fish.example` to `conf.d/secrets.fish` and add sensitive en
 
 LSP servers are auto-installed via [Mason](https://github.com/williamboman/mason.nvim), except: `ruby_lsp`, launched via the rbenv shim (`~/.rbenv/shims/ruby-lsp`) so it picks the Ruby version pinned by each project's `.ruby-version` (install once per rbenv-managed Ruby: `rbenv shell <version> && gem install ruby-lsp ruby-lsp-rails && rbenv rehash`); and `sourcekit`, which ships with the active Xcode toolchain and can't be installed via Mason. `swiftformat`/`swiftlint`/`prettierd`/`stylua` come from Homebrew or Mason as listed.
 
+The Ruby LSP Rails addon's "Run Migrations" prompt is disabled (`enablePendingMigrationsPrompt = false`): it interrupts constantly when a project has pending migrations, and it would run them on the host Ruby, which is wrong for dockerized projects. Run migrations manually instead (e.g. `bin/compose run backend bundle exec rails db:migrate`).
+
 ### iOS / Swift (xcodebuild.nvim)
 
 Full iOS/macOS development without leaving Neovim: code intelligence via `sourcekit-lsp`, formatting/linting via `swiftformat`/`swiftlint`, and build/run/test/debug via [xcodebuild.nvim](https://github.com/wojciech-kulik/xcodebuild.nvim) (driving the `xcodebuild` CLI, `xcrun simctl` simulators, and `nvim-dap`).

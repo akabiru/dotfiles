@@ -14,6 +14,17 @@ return {
         ruby_lsp = {
           mason = false,
           cmd = { vim.fn.expand("~/.rbenv/shims/ruby-lsp") },
+          init_options = {
+            addonSettings = {
+              -- The Rails addon interrupts with a "Run Migrations" prompt
+              -- whenever it detects pending migrations. Besides being noisy,
+              -- it would run them on the host Ruby, which is wrong for
+              -- dockerized projects (OpenProject migrates via bin/compose).
+              ["Ruby LSP Rails"] = {
+                enablePendingMigrationsPrompt = false,
+              },
+            },
+          },
         },
         -- Mason's bundled rubocop is incompatible with newer rubocop
         -- extension gems (e.g. rubocop-capybara 2.21+ uses an
