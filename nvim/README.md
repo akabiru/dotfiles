@@ -15,7 +15,7 @@ LazyVim-based Neovim setup for Ruby/Rails, TypeScript, Lua, and Swift/iOS.
 | [nvim-lint](https://github.com/mfussenegger/nvim-lint) | Linting |
 | [vim-test](https://github.com/vim-test/vim-test) | Test runner (runs tests in tmux pane via vimux) |
 | [vimux](https://github.com/preservim/vimux) | Send commands to a tmux pane from Neovim |
-| [snacks.nvim](https://github.com/folke/snacks.nvim) | File picker/explorer (configured to show hidden files) |
+| [snacks.nvim](https://github.com/folke/snacks.nvim) | File picker/explorer (configured to show hidden files); the GitHub PR pickers (`<leader>gp` list and its diff view) use a custom near-fullscreen layout with a 30/70 list-to-preview split for reviewing |
 | [claudecode.nvim](https://github.com/coder/claudecode.nvim) | Claude Code integration — in-editor terminal, send buffer/selection, diff review (requires `claude` CLI on PATH) |
 | [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) | Seamless pane navigation between Neovim and tmux |
 | [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | Git change signs in the gutter + inline current-line blame (GitLens-style virtual text at EOL) |
