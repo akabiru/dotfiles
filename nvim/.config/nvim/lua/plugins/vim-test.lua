@@ -74,6 +74,11 @@ return {
         return
       end
 
+      -- The spec path comes from the opened buffer, so its components are
+      -- attacker-controlled in a cloned repo. Every segment interpolated into a
+      -- shell string is passed through vim.fn.shellescape() before it reaches
+      -- the shell to prevent command injection.
+      --
       -- `config/database.yml` is the local-setup marker (the docker setup
       -- forbids it, which is how bin/compose itself tells the two apart). Local:
       -- run on the host. Docker: exec into the running `frontend` container.
@@ -81,17 +86,23 @@ return {
       if vim.fn.filereadable(repo .. "/config/database.yml") == 1 then
         cmd = string.format(
           "cd %s/frontend && npm test -- --include=%s --browsers=chromium --headless",
-          repo,
-          rel
+          vim.fn.shellescape(repo),
+          vim.fn.shellescape(rel)
         )
       else
+        -- The docker branch is parsed by two shells: the tmux pane shell, then
+        -- the inner `bash -lc`. So `rel` is escaped for the inner bash, and the
+        -- whole inner script is escaped again for the outer shell.
         -- bin/compose resolves a relative compose file, so it must run from the
         -- repo root; the container WORKDIR is already `frontend/`.
+        local inner = string.format(
+          "npm test -- --include=%s --browsers=chromium --headless",
+          vim.fn.shellescape(rel)
+        )
         cmd = string.format(
-          "cd %s && bin/compose exec frontend bash -lc "
-            .. "'npm test -- --include=%s --browsers=chromium --headless'",
-          repo,
-          rel
+          "cd %s && bin/compose exec frontend bash -lc %s",
+          vim.fn.shellescape(repo),
+          vim.fn.shellescape(inner)
         )
       end
       vim.fn.VimuxRunCommand(cmd)
