@@ -8,6 +8,7 @@ Global settings, custom agents, and slash commands for [Claude Code](https://doc
 |------|---------|
 | `CLAUDE.md` | Global instructions applied to all projects |
 | `RTK.md` | Imported by `CLAUDE.md`; reference for the `rtk` token-optimizing CLI proxy |
+| `COMMENTING.md` | Imported by `CLAUDE.md`; when a code comment earns its place and how to write it |
 | `agents/rails-code-reviewer.md` | Rails code review (ActiveRecord, PostgreSQL, service objects) |
 | `agents/rails-staff-engineer.md` | Staff-level Rails implementation and refactoring |
 | `agents/rails-security-auditor.md` | Rails security audit (injection, authz, uploads, deserialization) |

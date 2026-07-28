@@ -90,3 +90,16 @@ Reserve no-checkpoint autonomous execution for trivial, low-risk, mechanical wor
 - **No em dashes, anywhere.** This applies to every output: chat replies, code comments, commit messages, PR descriptions, ghostwritten reviews, and any prose. Where an em dash would go, use a normal hyphen-dash (-) or a semicolon to achieve the same punctuation; just swap the character, don't restructure the sentence.
 
 @RTK.md
+
+@COMMENTING.md
+
+<!-- CODEGRAPH_START -->
+## CodeGraph
+
+In repositories indexed by CodeGraph (a `.codegraph/` directory exists at the repo root), reach for it BEFORE grep/find or reading files when you need to understand or locate code:
+
+- **MCP tool** (when available): `codegraph_explore` answers most code questions in one call — the relevant symbols' verbatim source plus the call paths between them, including dynamic-dispatch hops grep can't follow. Name a file or symbol in the query to read its current line-numbered source. If it's listed but deferred, load it by name via tool search.
+- **Shell** (always works): `codegraph explore "<symbol names or question>"` prints the same output.
+
+If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is the user's decision.
+<!-- CODEGRAPH_END -->
