@@ -1,8 +1,8 @@
 ---
-description: Claude takes the keyboard (Mode 2) — drives in reviewable, checkpointed steps
+description: Claude takes the keyboard (Mode 2) - drives in reviewable, checkpointed steps
 ---
 
-Switch to **Mode 2 — you (Claude) drive**, per the Collaboration Model in CLAUDE.md.
+Switch to **Mode 2 - you (Claude) drive**, per the Collaboration Model in CLAUDE.md.
 
 Take the keyboard, but never a big-bang dump:
 
