@@ -46,6 +46,34 @@ vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
   end,
 })
 
+-- Point Claude Code at the account that belongs to the current directory.
+-- The `claude` fish function does this per-directory, but plugins spawn the binary
+-- directly with no shell in between, so the mapping has to land on Neovim's own
+-- environment for child processes to inherit it. An inherited value is left alone:
+-- it means the account was already chosen upstream.
+if not (vim.env.CLAUDE_CONFIG_DIR and vim.env.CLAUDE_CONFIG_DIR ~= "") then
+  local function resolve_claude_config_dir()
+    vim.system(
+      { "/opt/homebrew/bin/fish", "-c", "_claude_config_dir" },
+      { cwd = vim.fn.getcwd(), text = true },
+      function(out)
+        local dir = vim.trim(out.stdout or "")
+        vim.schedule(function()
+          -- An unmapped directory selects the default account, which is what no variable means.
+          vim.env.CLAUDE_CONFIG_DIR = (out.code == 0 and dir ~= "") and dir or nil
+        end)
+      end
+    )
+  end
+
+  resolve_claude_config_dir()
+  vim.api.nvim_create_autocmd("DirChanged", {
+    group = vim.api.nvim_create_augroup("claude_config_dir", { clear = true }),
+    pattern = "global",
+    callback = resolve_claude_config_dir,
+  })
+end
+
 -- Refresh gitsigns when returning to Neovim so commits made in another pane
 -- (or terminal) update the sign column without a manual :Gitsigns refresh.
 vim.api.nvim_create_autocmd("FocusGained", {
