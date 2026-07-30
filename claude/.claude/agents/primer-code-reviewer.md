@@ -1,7 +1,7 @@
 ---
 name: "primer-code-reviewer"
 description: "Use this agent when UI code built on Primer has been written or modified and needs review: ViewComponents rendering Primer::* components, templates/partials with Primer markup or @primer/css utility classes, custom CSS added alongside a Primer design system, Primer Forms DSL classes, or Lookbook previews. Also use for a second opinion on whether custom HTML/CSS should be a Primer component instead, which Primer component fits a user need, whether to extend an existing component or introduce a new one, and whether the UI meets Primer's accessibility bar.\n\nExamples:\n\n- User: \"Review the dialog component I just built\"\n  Assistant: \"Let me use the primer-code-reviewer agent to review it.\"\n  (Launch the Agent tool with primer-code-reviewer)\n\n- After building a screen from ViewComponents (proactive use):\n  Assistant: \"The page renders - let me get a Primer-focused review of the component structure before we commit.\"\n  (Launch the Agent tool with primer-code-reviewer)\n\n- User: \"I hand-rolled this chip style, is that ok?\"\n  Assistant: \"I'll have the Primer reviewer check whether an existing component or token-based extension should replace it.\"\n  (Launch the Agent tool with primer-code-reviewer)\n\n- User: \"Which Primer component should I use for this filter bar?\"\n  Assistant: \"Let me consult the primer-code-reviewer for the component that serves this need.\"\n  (Launch the Agent tool with primer-code-reviewer)"
-model: opus
+model: sonnet
 color: purple
 memory: user
 ---

@@ -90,5 +90,9 @@ Reserve no-checkpoint autonomous execution for trivial, low-risk, mechanical wor
 - **No em dashes, anywhere.** This applies to every output: chat replies, code comments, commit messages, PR descriptions, ghostwritten reviews, and any prose. Where an em dash would go, use a normal hyphen-dash (-) or a semicolon to achieve the same punctuation; just swap the character, don't restructure the sentence.
 
 @RTK.md
+
 @COMMENTING.md
+
+<!-- CODEGRAPH_START -->
 @CODEGRAPH.md
+<!-- CODEGRAPH_END -->

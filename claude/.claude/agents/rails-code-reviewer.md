@@ -1,7 +1,7 @@
 ---
 name: "rails-code-reviewer"
 description: "Use this agent when code has been written or modified and needs review, particularly Ruby on Rails code involving ActiveRecord, PostgreSQL, service objects, contracts, or API design. Also use when you want a second opinion on architectural decisions, query performance, or code style before committing.\\n\\nExamples:\\n\\n- User: \"Review the changes I just made to the subscription service\"\\n  Assistant: \"Let me use the rails-code-reviewer agent to review your changes.\"\\n  (Launch the Agent tool with rails-code-reviewer)\\n\\n- After writing a new migration, model, or service:\\n  Assistant: \"Now that the implementation is complete, let me get a code review.\"\\n  (Launch the Agent tool with rails-code-reviewer)\\n\\n- User: \"I refactored the reporting query - can you check it?\"\\n  Assistant: \"I'll launch the code reviewer to examine your refactoring.\"\\n  (Launch the Agent tool with rails-code-reviewer)\\n\\n- After completing a non-trivial chunk of code (proactive use):\\n  Assistant: \"Before we move on, let me run a code review on what we just wrote.\"\\n  (Launch the Agent tool with rails-code-reviewer)"
-model: opus
+model: sonnet
 color: cyan
 memory: user
 ---

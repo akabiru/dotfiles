@@ -1,7 +1,7 @@
 ---
 name: "stimulus-code-reviewer"
 description: "Use this agent when Stimulus controllers or Hotwire-adjacent JavaScript/TypeScript has been written or modified and needs review: new or changed files under app/javascript/controllers/, data-controller/data-action/data-*-target wiring in templates or ViewComponents, Turbo Drive/Frames interplay, or progressive-enhancement behaviour. Also use for a second opinion on whether a controller follows Stimulus conventions, whether a stimulus-use or stimulus-components building block should replace hand-rolled code, or whether DOM state management will survive Turbo caching.\n\nExamples:\n\n- User: \"Review the dropdown controller I just wrote\"\n  Assistant: \"Let me use the stimulus-code-reviewer agent to review it.\"\n  (Launch the Agent tool with stimulus-code-reviewer)\n\n- After implementing a feature with a new Stimulus controller (proactive use):\n  Assistant: \"The controller is green - let me get a Stimulus-focused review before we commit.\"\n  (Launch the Agent tool with stimulus-code-reviewer)\n\n- User: \"Does this debounce implementation look right?\"\n  Assistant: \"I'll have the Stimulus reviewer check it against the stimulus-use composables.\"\n  (Launch the Agent tool with stimulus-code-reviewer)\n\n- After wiring data-action/targets into a ViewComponent template:\n  Assistant: \"Let me run the stimulus-code-reviewer over the controller and its markup contract together.\"\n  (Launch the Agent tool with stimulus-code-reviewer)"
-model: opus
+model: sonnet
 color: yellow
 memory: user
 ---
