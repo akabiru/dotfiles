@@ -25,7 +25,7 @@ LazyVim-based Neovim setup for Ruby/Rails, TypeScript, Lua, and Swift/iOS.
 | [vim-wakatime](https://github.com/wakatime/vim-wakatime) | Automatic time tracking to the WakaTime dashboard (needs an API key in `~/.wakatime.cfg`, prompted on first launch) |
 | [lazydocker.nvim](https://github.com/mgierada/lazydocker.nvim) | Lazydocker TUI in a floating window — manage containers, images, logs, and volumes (requires the `lazydocker` binary) |
 | [xcodebuild.nvim](https://github.com/wojciech-kulik/xcodebuild.nvim) | Build, run, test & debug iOS/macOS/watchOS/tvOS apps — manages simulators, schemes, tests, code coverage, and nvim-dap debugging (requires Xcode + the Homebrew Swift tooling; see iOS / Swift below) |
-
+| [hardtime.nvim](https://github.com/m4xshen/hardtime.nvim) | Vim habit coach — nags on inefficient motions (repeated `hjkl`, arrow keys) and hints the idiomatic alternative; `:Hardtime report` shows your most common bad habits. Also wires up `:CoachReport` (custom, `lua/coach.lua`): feeds the aggregated hardtime log to the `claude` CLI and shows AI feedback — top habits to fix, drills, remap suggestions — in a floating window (`q` closes). Incremental: only lines since the last report are sent (offset kept in `stdpath("data")/coach_cursor.json`); `:CoachReport!` sends the full log |
 ## Language Support
 
 | Language | LSP | Formatter | Linter |
