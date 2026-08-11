@@ -69,17 +69,17 @@ local function build_prompt(entries)
     "1. My top 3 habits to fix, worst first, each with the idiomatic alternative and a one-line drill.",
     "2. Any keymap or plugin suggestion that would remove the temptation entirely.",
     "Be specific and terse. Markdown, no preamble.",
+    "Afterwards, answer my follow-up questions as the same coach.",
   }, "\n")
 end
 
-local function show_float(text)
+-- Interactive claude session in a floating terminal, seeded with the prompt
+-- so the conversation can continue after the initial report.
+local function open_chat(prompt)
+  local width = math.floor(vim.o.columns * 0.75)
+  local height = math.floor(vim.o.lines * 0.8)
   local buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(text, "\n"))
-  vim.bo[buf].filetype = "markdown"
-  vim.bo[buf].modifiable = false
-  local width = math.min(90, math.floor(vim.o.columns * 0.8))
-  local height = math.min(vim.api.nvim_buf_line_count(buf) + 2, math.floor(vim.o.lines * 0.8))
-  local win = vim.api.nvim_open_win(buf, true, {
+  vim.api.nvim_open_win(buf, true, {
     relative = "editor",
     width = width,
     height = height,
@@ -89,8 +89,8 @@ local function show_float(text)
     border = "rounded",
     title = " Coach ",
   })
-  vim.wo[win].wrap = true
-  vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = buf, nowait = true })
+  vim.fn.jobstart({ "claude", prompt }, { term = true })
+  vim.cmd.startinsert()
 end
 
 -- opts.full sends the whole log instead of just lines since the last report.
@@ -110,19 +110,10 @@ function M.report(opts)
     vim.notify("Coach: claude CLI not found on PATH", vim.log.levels.ERROR)
     return
   end
-  vim.notify("Coach: analyzing " .. #batch .. " hints...", vim.log.levels.INFO)
-  vim.system(
-    { "claude", "-p" },
-    { stdin = build_prompt(entries), timeout = 120000 },
-    vim.schedule_wrap(function(out)
-      if out.code ~= 0 then
-        vim.notify("Coach: claude failed: " .. (out.stderr or ""), vim.log.levels.ERROR)
-        return
-      end
-      write_cursor(#lines, lines[1])
-      show_float(vim.trim(out.stdout or ""))
-    end)
-  )
+  -- The cursor advances at launch: an interactive session has no success
+  -- callback, and :CoachReport! recovers the rare failed run.
+  write_cursor(#lines, lines[1])
+  open_chat(build_prompt(entries))
 end
 
 function M.setup()
