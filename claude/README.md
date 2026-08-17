@@ -17,6 +17,7 @@ Global settings, custom agents, and slash commands for [Claude Code](https://doc
 | `agents/local-first-architect.md` | Local-first/CRDT architecture (Yjs, BlockNote, Hocuspocus, ProseMirror) |
 | `agents/primer-code-reviewer.md` | Primer design system review (ViewComponents, Forms DSL, a11y) |
 | `agents/stimulus-code-reviewer.md` | Stimulus controller and Hotwire review |
+| `agents/nextjs-code-reviewer.md` | Next.js App Router review (server/client boundary, server actions, caching) |
 | `agents/release-stewardship-cto.md` | Release readiness, deployment compatibility, ownership mapping |
 | `commands/drive.md` | `/drive` slash command - hand the keyboard to Claude (pairing Mode 2) |
 | `commands/navigate.md` | `/navigate` slash command - Claude drops to navigator (pairing Mode 1) |
