@@ -1,26 +1,45 @@
 #!/usr/bin/env bash
 #
-# Run RSpec inside the OpenProject backend-test container against whatever git
-# worktree you're currently in. Works from the main checkout or any linked
-# worktree; the container path is derived from your cwd.
-#
-# Usage:
-#   optest spec/models/user_spec.rb
-#   optest spec/requests/foo_spec.rb:42 spec/models/bar_spec.rb
-#   optest spec/foo_spec.rb -- --seed 1234        # args after -- go to rspec
-#
-# Env overrides:
-#   OP_CONTAINER_ROOT   mount target in the container (default /home/dev/openproject)
-#   OP_TEST_SERVICE     compose service (default backend-test)
-#   OP_RSPEC            test runner (default "bundle exec rspec")
+# op-test - run RSpec inside the OpenProject backend-test container against
+# whatever git worktree you're currently in.
 set -euo pipefail
 
+PROG="${0##*/}"
 CONTAINER_ROOT="${OP_CONTAINER_ROOT:-/home/dev/openproject}"
 SERVICE="${OP_TEST_SERVICE:-backend-test}"
 read -r -a RSPEC <<<"${OP_RSPEC:-bundle exec rspec}"
 
+usage() {
+  cat <<EOF
+$PROG - run RSpec in the OpenProject backend-test container from any worktree.
+
+Derives the container working directory from your current git worktree, and
+temporarily matches the worktree's .ruby-version to the main checkout so a
+linked worktree on another branch still boots against the shared image.
+
+USAGE:
+  $PROG <spec>...            run one or more spec files or file:line targets
+  $PROG <spec> -- <args>     pass everything after -- straight to rspec
+  $PROG -h | --help          show this help
+
+EXAMPLES:
+  $PROG spec/models/user_spec.rb
+  $PROG spec/requests/foo_spec.rb:42 spec/models/bar_spec.rb
+  $PROG spec/foo_spec.rb -- --seed 1234
+
+ENVIRONMENT:
+  OP_CONTAINER_ROOT   mount target in the container (default $CONTAINER_ROOT)
+  OP_TEST_SERVICE     compose service           (default $SERVICE)
+  OP_RSPEC            test runner               (default "bundle exec rspec")
+EOF
+}
+
+case "${1:-}" in
+  ""|-h|--help) usage; exit 0 ;;
+esac
+
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  echo "optest: not inside a git worktree" >&2
+  echo "$PROG: not inside a git worktree" >&2
   exit 1
 fi
 
@@ -46,7 +65,7 @@ fi
 cleanup() { if $restore; then mv "$rv.optest-bak" "$rv"; fi; }
 trap cleanup EXIT
 
-echo "optest: $SERVICE @ $container_wd" >&2
+echo "$PROG: $SERVICE @ $container_wd" >&2
 docker compose --project-directory "$main_root" \
   exec -w "$container_wd" "$SERVICE" \
   "${RSPEC[@]}" "$@"
