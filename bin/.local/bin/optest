@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+#
+# Run RSpec inside the OpenProject backend-test container against whatever git
+# worktree you're currently in. Works from the main checkout or any linked
+# worktree; the container path is derived from your cwd.
+#
+# Usage:
+#   optest spec/models/user_spec.rb
+#   optest spec/requests/foo_spec.rb:42 spec/models/bar_spec.rb
+#   optest spec/foo_spec.rb -- --seed 1234        # args after -- go to rspec
+#
+# Env overrides:
+#   OP_CONTAINER_ROOT   mount target in the container (default /home/dev/openproject)
+#   OP_TEST_SERVICE     compose service (default backend-test)
+#   OP_RSPEC            test runner (default "bundle exec rspec")
+set -euo pipefail
+
+CONTAINER_ROOT="${OP_CONTAINER_ROOT:-/home/dev/openproject}"
+SERVICE="${OP_TEST_SERVICE:-backend-test}"
+read -r -a RSPEC <<<"${OP_RSPEC:-bundle exec rspec}"
+
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  echo "optest: not inside a git worktree" >&2
+  exit 1
+fi
+
+# Main checkout = docker mount source = parent of the shared git dir.
+main_root="$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")"
+worktree_top="$(git rev-parse --show-toplevel)"
+
+# Container working dir mirrors the worktree's position under the mount.
+rel="${worktree_top#"$main_root"}"
+rel="${rel#/}"
+container_wd="$CONTAINER_ROOT${rel:+/$rel}"
+
+# The Gemfile pins Ruby via .ruby-version; a linked worktree on another branch
+# may pin a version the image doesn't ship. Match the main checkout for the run.
+rv="$worktree_top/.ruby-version"
+main_rv="$main_root/.ruby-version"
+restore=false
+if [[ -f "$rv" && -f "$main_rv" ]] && ! cmp -s "$rv" "$main_rv"; then
+  cp "$rv" "$rv.optest-bak"
+  cp "$main_rv" "$rv"
+  restore=true
+fi
+cleanup() { if $restore; then mv "$rv.optest-bak" "$rv"; fi; }
+trap cleanup EXIT
+
+echo "optest: $SERVICE @ $container_wd" >&2
+docker compose --project-directory "$main_root" \
+  exec -w "$container_wd" "$SERVICE" \
+  "${RSPEC[@]}" "$@"
