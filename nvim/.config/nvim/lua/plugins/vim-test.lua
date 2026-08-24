@@ -1,4 +1,5 @@
--- vim-test with vimux strategy: runs tests in a tmux pane
+-- vim-test runs the test command in a multiplexer pane beside the editor:
+-- a herdr pane under herdr, a vimux pane under tmux.
 -- See: https://github.com/vim-test/vim-test
 return {
   "vim-test/vim-test",
@@ -6,7 +7,19 @@ return {
     "preservim/vimux",
   },
   config = function()
-    vim.cmd("let test#strategy = 'vimux'")
+    -- vim-test dispatches through a Funcref, so the herdr runner is reached via
+    -- a thin viml shim. HERDR_PANE_ID is injected into every herdr-managed pane.
+    if vim.env.HERDR_PANE_ID then
+      vim.cmd([[
+        function! s:HerdrStrategy(cmd) abort
+          call luaeval('require("config.herdr-test").run(_A)', a:cmd)
+        endfunction
+        let g:test#custom_strategies = {'herdr': function('s:HerdrStrategy')}
+        let g:test#strategy = 'herdr'
+      ]])
+    else
+      vim.cmd("let test#strategy = 'vimux'")
+    end
 
     -- Dockerized OpenProject-style repos can't run rspec on the host; tests
     -- run inside the container via `bin/compose rspec`. Detect that layout
@@ -90,7 +103,7 @@ return {
           vim.fn.shellescape(rel)
         )
       else
-        -- The docker branch is parsed by two shells: the tmux pane shell, then
+        -- The docker branch is parsed by two shells: the runner pane's shell, then
         -- the inner `bash -lc`. So `rel` is escaped for the inner bash, and the
         -- whole inner script is escaped again for the outer shell.
         -- bin/compose resolves a relative compose file, so it must run from the
@@ -105,7 +118,11 @@ return {
           vim.fn.shellescape(inner)
         )
       end
-      vim.fn.VimuxRunCommand(cmd)
+      if vim.env.HERDR_PANE_ID then
+        require("config.herdr-test").run(cmd)
+      else
+        vim.fn.VimuxRunCommand(cmd)
+      end
     end
 
     vim.keymap.set("n", "<leader>tn", ":TestNearest<CR>", { desc = "Run nearest test" })

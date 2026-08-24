@@ -1,0 +1,45 @@
+# herdr configuration
+# Full option list: `herdr --default-config`
+
+[terminal]
+default_shell = "/opt/homebrew/bin/fish"
+
+# New panes, tabs, and workspaces inherit the source pane's directory.
+new_cwd = "follow"
+
+[theme]
+name = "catppuccin"
+auto_switch = true
+dark_name = "catppuccin"
+light_name = "catppuccin-latte"
+
+[ui]
+tab_bar_position = "top"
+mouse_capture = true
+copy_on_select = true
+
+[keys]
+prefix = "ctrl+space"
+
+# Reload takes prefix+r, so resize mode moves to the shifted key.
+reload_config = "prefix+r"
+resize_mode = "prefix+shift+r"
+
+split_vertical = ["prefix+v", "prefix+|"]
+split_horizontal = "prefix+minus"
+new_tab = "prefix+c"
+
+# ctrl+hjkl is deliberately unbound: those keys must reach Neovim, which decides
+# whether to move between its own windows or hand off to herdr at the edge.
+# ctrl+alt+hjkl is the prefix-free equivalent for shell panes.
+focus_pane_left = ["prefix+h", "ctrl+alt+h"]
+focus_pane_down = ["prefix+j", "ctrl+alt+j"]
+focus_pane_up = ["prefix+k", "ctrl+alt+k"]
+focus_pane_right = ["prefix+l", "ctrl+alt+l"]
+
+# herdr leaves these unbound. tmux has a last/cycle toggle at every level, and
+# nvim/docs/navigation.md documents that pattern, so restore it here.
+last_pane = "prefix+;"
+previous_workspace = "prefix+("
+next_workspace = "prefix+)"
+switch_workspace = "prefix+shift+1..9"

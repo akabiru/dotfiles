@@ -1,6 +1,6 @@
 # Navigation & Motions Cheatsheet
 
-Quick reference for moving around in Neovim (LazyVim) and across tmux panes.
+Quick reference for moving around in Neovim (LazyVim) and across multiplexer panes.
 Most of these are vanilla Vim — LazyVim-specific entries are flagged.
 
 ## Within the current line
@@ -79,13 +79,25 @@ The fix-free workflow: **lowercase = "where I'm working", uppercase = "the whole
 | Grep | `<leader>sg` | `<leader>sG` |
 | Explorer (neo-tree) | `<leader>e` | `<leader>E` |
 
-## tmux — "go back to the last…" (companion to `Ctrl-O`)
+## Multiplexer - "go back to the last…" (companion to `Ctrl-O`)
 
-tmux only remembers the **single** last target (a toggle, not a stack). Same pattern at
-every level. (Directional pane moves are `Ctrl-h/j/k/l` via vim-tmux-navigator.)
+Both multiplexers remember the **single** last target (a toggle, not a stack). Same
+pattern at every level. Directional pane moves are `Ctrl-h/j/k/l` everywhere; see
+[herdr's README](../../../herdr/README.md#neovim-navigation) for how that key reaches
+the right layer under each one.
+
+tmux - prefix is `Ctrl-Space`:
 
 | Scope | Last (toggle) | Cycle next / prev |
 |-------|---------------|-------------------|
 | Pane | `prefix + ;` | `prefix + o` |
-| Window | `prefix + l` | `prefix + n` / `prefix + p` |
+| Window | *(unbound: `prefix + l` is taken by `select-pane -R`)* | `prefix + n` / `prefix + p` |
 | Session | `prefix + L` | `prefix + )` / `prefix + (` |
+
+herdr - same prefix, and workspace/tab/pane stand in for session/window/pane:
+
+| Scope | Last (toggle) | Cycle next / prev |
+|-------|---------------|-------------------|
+| Pane | `prefix + ;` | `prefix + Tab` / `prefix + Shift + Tab` |
+| Tab | *(no toggle)* | `prefix + n` / `prefix + p` |
+| Workspace | *(no toggle)* | `prefix + )` / `prefix + (` |
