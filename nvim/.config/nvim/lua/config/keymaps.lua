@@ -19,7 +19,7 @@ end, { desc = "Copy absolute path" })
 vim.keymap.set("x", "p", [["_dP]], { desc = "Paste without clobber" })
 vim.keymap.set("x", "P", [["_dP]], { desc = "Paste without clobber" })
 
--- Toggle diagnostics for the current buffer only (global toggle is <leader>ud)
+-- Override LazyVim's global diagnostics toggle: <leader>ud acts on the current buffer only
 Snacks.toggle({
   name = "Buffer Diagnostics",
   get = function()
@@ -28,4 +28,4 @@ Snacks.toggle({
   set = function(state)
     vim.diagnostic.enable(state, { bufnr = 0 })
   end,
-}):map("<leader>uB")
+}):map("<leader>ud")
