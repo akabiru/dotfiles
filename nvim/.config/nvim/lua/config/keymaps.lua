@@ -28,4 +28,4 @@ Snacks.toggle({
   set = function(state)
     vim.diagnostic.enable(state, { bufnr = 0 })
   end,
-}):map("<leader>uD")
+}):map("<leader>uB")
