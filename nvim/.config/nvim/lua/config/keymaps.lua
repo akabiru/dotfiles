@@ -18,3 +18,14 @@ end, { desc = "Copy absolute path" })
 -- Paste over a visual selection without clobbering the unnamed register
 vim.keymap.set("x", "p", [["_dP]], { desc = "Paste without clobber" })
 vim.keymap.set("x", "P", [["_dP]], { desc = "Paste without clobber" })
+
+-- Toggle diagnostics for the current buffer only (global toggle is <leader>ud)
+Snacks.toggle({
+  name = "Buffer Diagnostics",
+  get = function()
+    return vim.diagnostic.is_enabled({ bufnr = 0 })
+  end,
+  set = function(state)
+    vim.diagnostic.enable(state, { bufnr = 0 })
+  end,
+}):map("<leader>uD")
