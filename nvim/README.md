@@ -119,16 +119,14 @@ Once a debug session is running (`<leader>Xn`), the general `<leader>d…` keyma
 
 ## Claude Code (claudecode.nvim)
 
-The plugin-managed Claude runs in a **floating terminal** (75% x 80%, rounded border) rather than a split, so it can sit on top of a full-width editor. Treat it as the contextual assistant: select a block, `<leader>as`, ask follow-ups in the float. A separate Claude driven in its own tmux pane stays independent - as long as you never run `/ide` in it, since sends reach every client attached to Neovim's WebSocket server.
-
 | Keymap | Action |
 |--------|--------|
-| `<leader>ac` | Toggle Claude terminal (hides the float; session survives) |
+| `<leader>ac` | Toggle Claude terminal |
 | `<leader>af` | Focus Claude terminal |
 | `<leader>ar` | Resume a previous Claude session (`--resume`) |
 | `<leader>aC` | Continue the last Claude session (`--continue`) |
 | `<leader>ab` | Add current buffer to Claude context |
-| `<leader>as` | Send selection to Claude and focus the float (visual mode) / add file from tree (NvimTree, neo-tree, oil) |
+| `<leader>as` | Send selection to Claude (visual mode) / add file from tree (NvimTree, neo-tree, oil) |
 | `<leader>aa` | Accept Claude's proposed diff |
 | `<leader>ad` | Deny Claude's proposed diff |
 
