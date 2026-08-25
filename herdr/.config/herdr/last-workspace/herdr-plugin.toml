@@ -1,0 +1,18 @@
+id = "dotfiles-lastworkspace"
+name = "Last workspace"
+version = "0.1.0"
+min_herdr_version = "0.7.0"
+description = "Toggle back to the previously focused workspace"
+platforms = ["macos", "linux"]
+
+# herdr has no last_workspace action, so the focus history is kept here:
+# every switch is recorded, however it was made, and the action bounces back.
+[[events]]
+on = "workspace.focused"
+command = ["sh", "-c", "exec sh \"$HERDR_PLUGIN_ROOT/record.sh\""]
+
+[[actions]]
+id = "focus-previous"
+title = "Focus previous workspace"
+contexts = ["workspace"]
+command = ["sh", "-c", "exec sh \"$HERDR_PLUGIN_ROOT/focus-previous.sh\""]

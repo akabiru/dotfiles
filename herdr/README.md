@@ -25,6 +25,7 @@ Herdr's hierarchy is **workspace → tab → pane**, where tmux has session → 
 | `prefix + n` / `prefix + p` | Next / previous tab |
 | `prefix + 1..9` | Switch tab |
 | `prefix + (` / `prefix + )` | Previous / next workspace |
+| `prefix + Shift + L` | Last workspace (toggle) |
 | `prefix + Shift + 1..9` | Switch workspace |
 | `prefix + Shift + R` | Resize mode (displaced by `prefix + r`) |
 
@@ -62,6 +63,24 @@ h/j/k/l` or the prefix there.
 The same keymap serves tmux, where it delegates to
 [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator). The
 branch is chosen at runtime from `$HERDR_PANE_ID`.
+
+## Last workspace
+
+`prefix + Shift + L` is tmux's `switch-client -l`. herdr has no `last_workspace`
+action, so it goes through the small plugin in `last-workspace/`: a
+`workspace.focused` event hook records the focus history, and the bound action
+reads it back. Hooking the event rather than recording on keypress is what makes
+the toggle correct when you switch by other means, such as the `prefix + w`
+picker or `prefix + (` / `prefix + )`.
+
+The plugin needs linking once per machine:
+
+```bash
+herdr plugin link ~/.config/herdr/last-workspace
+```
+
+State lives in `~/.local/state/herdr/plugins/dotfiles-lastworkspace`. If the
+recorded workspace has since been closed, the key does nothing.
 
 ## Running tests
 

@@ -43,3 +43,13 @@ last_pane = "prefix+;"
 previous_workspace = "prefix+("
 next_workspace = "prefix+)"
 switch_workspace = "prefix+shift+1..9"
+
+# tmux's `prefix + L` (switch-client -l). herdr has no last_workspace action, so
+# this goes through the bundled last-workspace plugin, which tracks focus
+# history. Link it once with:
+#   herdr plugin link ~/.config/herdr/last-workspace
+[[keys.command]]
+key = "prefix+shift+l"
+type = "plugin_action"
+command = "dotfiles-lastworkspace.focus-previous"
+description = "focus previous workspace"

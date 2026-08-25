@@ -100,4 +100,4 @@ herdr - same prefix, and workspace/tab/pane stand in for session/window/pane:
 |-------|---------------|-------------------|
 | Pane | `prefix + ;` | `prefix + Tab` / `prefix + Shift + Tab` |
 | Tab | *(no toggle)* | `prefix + n` / `prefix + p` |
-| Workspace | *(no toggle)* | `prefix + )` / `prefix + (` |
+| Workspace | `prefix + L` | `prefix + )` / `prefix + (` |

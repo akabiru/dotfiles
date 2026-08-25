@@ -44,11 +44,17 @@ stow fish
 stow nvim
 ```
 
-After stowing, install tmux plugins:
+After stowing, install the tmux plugins:
 
 ```bash
 # Start tmux, then press prefix + I to install plugins via TPM
 tmux
+```
+
+And, if you use herdr, link its bundled plugin:
+
+```bash
+herdr plugin link ~/.config/herdr/last-workspace
 ```
 
 ### Brewfile
