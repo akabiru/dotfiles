@@ -6,6 +6,24 @@ Personal scripts on `PATH`, stowed into `~/.local/bin`.
 stow --target="$HOME" bin
 ```
 
+## work
+
+Opens a tmux workspace for a project: editor and shell stacked on the left, two
+AI agents stacked on the right. Creates the session on first call and attaches
+to it on every call after, so it doubles as the way back in. Run it with no args
+(or `-h`/`--help`) for usage.
+
+```sh
+work .                        # session named after the directory
+work ~/src/app -n review      # explicit session name
+work . -d                     # build it, stay where you are
+work . -k                     # kill the session
+```
+
+Pane commands and sizes come from the environment: `WORK_EDITOR` (default nvim
+with the Snacks explorer open), `WORK_TOP` (`pi`), `WORK_BOTTOM` (`claude`),
+`WORK_RIGHT_WIDTH` (31), `WORK_SHELL_HEIGHT` (12).
+
 ## op-test
 
 Runs RSpec inside the OpenProject `backend-test` container against whatever git

@@ -1,0 +1,145 @@
+#!/usr/bin/env bash
+#
+# work - open a tmux workspace for a project: editor and shell on the left,
+# two AI agents stacked on the right.
+set -euo pipefail
+
+PROG="${0##*/}"
+VERSION="0.1.0"
+
+EDITOR_CMD="${WORK_EDITOR:-nvim +'lua vim.schedule(function() Snacks.explorer.open() end)'}"
+TOP_CMD="${WORK_TOP:-pi}"
+BOTTOM_CMD="${WORK_BOTTOM:-claude}"
+RIGHT_WIDTH="${WORK_RIGHT_WIDTH:-31}"
+SHELL_HEIGHT="${WORK_SHELL_HEIGHT:-12}"
+
+usage() {
+  cat <<EOF
+$PROG - open a tmux workspace for a project.
+
+Builds a four-pane window and attaches to it, or attaches to the existing
+session if one is already up for that directory:
+
+  +-----------------------+------------------+
+  | \$WORK_EDITOR          | \$WORK_TOP        |
+  |                       +------------------+
+  +-----------------------+ \$WORK_BOTTOM     |
+  | shell                 |                  |
+  +-----------------------+------------------+
+
+USAGE:
+  $PROG <directory>          create or attach to the workspace for <directory>
+  $PROG -n <name> <dir>      name the session explicitly
+  $PROG -d <directory>       build the session but stay where you are
+  $PROG -k <directory>       kill the workspace session
+  $PROG -l                   list running tmux sessions
+  $PROG -h | --help          show this help
+  $PROG -V | --version       show the version
+
+EXAMPLES:
+  $PROG .
+  $PROG ~/dotfiles
+  $PROG -n review ~/src/app
+
+ENVIRONMENT:
+  WORK_EDITOR         editor pane command   (default nvim, explorer open)
+  WORK_TOP            top right command     (default $TOP_CMD)
+  WORK_BOTTOM         bottom right command  (default $BOTTOM_CMD)
+  WORK_RIGHT_WIDTH    right column width %  (default $RIGHT_WIDTH)
+  WORK_SHELL_HEIGHT   shell pane height %   (default $SHELL_HEIGHT)
+EOF
+}
+
+die() {
+  echo "$PROG: $1" >&2
+  exit "${2:-1}"
+}
+
+# Usage errors go to stderr and exit 2, so a caller can tell a malformed
+# invocation apart from a run that started and failed.
+usage_error() {
+  echo "$PROG: $1" >&2
+  echo "Try '$PROG --help' for more information." >&2
+  exit 2
+}
+
+name=""
+detach=false
+do_kill=false
+args=()
+
+# Options are read from anywhere on the line, not only before the directory,
+# so both `work -d .` and the `work . -d` most people type land the same way.
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)    usage; exit 0 ;;
+    -V|--version) echo "$PROG $VERSION"; exit 0 ;;
+    -l|--list)    exec tmux list-sessions ;;
+    -d|--detach)  detach=true; shift ;;
+    -k|--kill)    do_kill=true; shift ;;
+    -n|--name)    [[ $# -ge 2 ]] || usage_error "option '$1' requires an argument"
+                  name="$2"; shift 2 ;;
+    --name=*)     name="${1#*=}"; shift ;;
+    --)           shift; args+=("$@"); break ;;
+    -*)           usage_error "unrecognized option '$1'" ;;
+    *)            args+=("$1"); shift ;;
+  esac
+done
+
+if [[ ${#args[@]} -eq 0 ]]; then
+  usage
+  exit 0
+fi
+[[ ${#args[@]} -eq 1 ]] || usage_error "expected one directory, got ${#args[@]}"
+
+command -v tmux >/dev/null || die "tmux is not installed"
+[[ -d "${args[0]}" ]] || die "no such directory: ${args[0]}"
+dir="$(cd -- "${args[0]}" && pwd)"
+
+# tmux reads . and : in a target as window and pane separators, so neither can
+# appear in a session name.
+[[ -n "$name" ]] || name="$(basename "$dir")"
+name="${name//[.:]/_}"
+
+attach() {
+  if [[ -n "${TMUX:-}" ]]; then
+    tmux switch-client -t "=$name"
+  else
+    tmux attach-session -t "=$name"
+  fi
+}
+
+if $do_kill; then
+  tmux has-session -t "=$name" 2>/dev/null || die "no session named '$name'"
+  exec tmux kill-session -t "=$name"
+fi
+
+if tmux has-session -t "=$name" 2>/dev/null; then
+  if $detach; then
+    echo "$PROG: session '$name' already running" >&2
+    exit 0
+  fi
+  attach
+  exit 0
+fi
+
+# Track panes by id rather than index: split order does not decide the index,
+# and pane-base-index shifts the numbering out from under a hardcoded target.
+# A session name is not a valid pane target, so the first id has to come from
+# new-session itself; asking for it afterwards resolves to the wrong session.
+editor="$(tmux new-session -d -s "$name" -c "$dir" -n "$(basename "$dir")" \
+  -P -F '#{pane_id}')"
+top="$(tmux split-window -h -l "${RIGHT_WIDTH}%" -c "$dir" -t "$editor" -P -F '#{pane_id}')"
+bottom="$(tmux split-window -v -l 50% -c "$dir" -t "$top" -P -F '#{pane_id}')"
+tmux split-window -v -l "${SHELL_HEIGHT}%" -c "$dir" -t "$editor"
+
+tmux send-keys -t "$editor" "$EDITOR_CMD" C-m
+tmux send-keys -t "$top" "$TOP_CMD" C-m
+tmux send-keys -t "$bottom" "$BOTTOM_CMD" C-m
+tmux select-pane -t "$editor"
+
+if $detach; then
+  echo "$PROG: session '$name' ready" >&2
+  exit 0
+fi
+attach
