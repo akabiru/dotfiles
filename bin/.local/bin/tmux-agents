@@ -114,7 +114,7 @@ sync() {
   [[ -n "$panes" ]] || return 0
   agents="$(for dir in $(config_dirs); do
       CLAUDE_CONFIG_DIR="$dir" claude agents --json 2>/dev/null
-    done | jq -r '.[] | select(.status != null) | "\(.pid) \(.status) \(.name // "")"')" || return 0
+    done | jq -r '.[] | select(.status != null) | [.pid, .status, (.name // "")] | @tsv')" || return 0
   [[ -n "$agents" ]] || return 0
   tree="$(ps -axo pid=,ppid=)"
 
@@ -122,7 +122,7 @@ sync() {
   while read -r pane pane_pid state; do
     status="" name=""
     for pid in $(descendants_of "$pane_pid" "$tree"); do
-      read -r status name < <(awk -v p="$pid" '$1 == p { print $2, $3 }' <<< "$agents") || true
+      IFS=$'\t' read -r status name < <(awk -F'\t' -v OFS='\t' -v p="$pid" '$1 == p { print $2, $3 }' <<< "$agents") || true
       [[ -n "$status" ]] && break
     done
     if [[ -n "$name" && "$name" != "$(tmux display -p -t "$pane" '#{@agent_name}')" ]]; then

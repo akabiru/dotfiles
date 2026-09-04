@@ -30,8 +30,10 @@ payload="$(cat)"
 # in the background.
 ntype="$(printf '%s' "$payload" | jq -r '.notification_type // empty' 2>/dev/null)"
 [ "$ntype" = "permission_prompt" ] || exit 0
-front="$(lsappinfo info -only name "$(lsappinfo front)" 2>/dev/null)"
-case "$front" in *Ghostty*) exit 0 ;; esac
+if command -v lsappinfo >/dev/null 2>&1; then
+  front="$(lsappinfo info -only name "$(lsappinfo front 2>/dev/null)" 2>/dev/null)"
+  case "$front" in *Ghostty*) exit 0 ;; esac
+fi
 
 message="$(printf '%s' "$payload" | jq -r '.message // empty' 2>/dev/null)"
 cwd="$(printf '%s' "$payload" | jq -r '.cwd // empty' 2>/dev/null)"

@@ -6,7 +6,7 @@ export default function (pi: ExtensionAPI) {
   if (!process.env.TMUX_PANE) return;
   const pane = process.env.TMUX_PANE;
   const mark = (state: string) =>
-    pi.exec("tmux-agents", [state === "clear" ? "clear" : "set", state]).catch(() => {});
+    pi.exec("tmux-agents", state === "clear" ? ["clear"] : ["set", state]).catch(() => {});
   const name = () =>
     pi.exec("tmux", ["set", "-p", "-t", pane, "@agent_name", "pi"]).catch(() => {});
 
