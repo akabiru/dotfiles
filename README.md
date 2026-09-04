@@ -12,7 +12,8 @@ Each package has its own README with the full details (aliases, plugins, keymaps
 |---------|-------------|
 | [`fish`](fish/README.md) | Shell configuration, aliases, functions, and completions |
 | [`nvim`](nvim/README.md) | LazyVim-based Neovim setup for Ruby/Rails, TypeScript, Lua, and Swift/iOS |
-| [`tmux`](tmux/README.md) | Terminal multiplexer with Catppuccin theme and vim-style navigation |
+| [`tmux`](tmux/README.md) | Terminal multiplexer with Catppuccin theme, vim-style navigation, and agent traffic lights |
+| [`pi`](pi/README.md) | pi coding agent extensions (tmux status reporting) |
 | [`ghostty`](ghostty/README.md) | Ghostty terminal emulator settings |
 | [`claude`](claude/README.md) | Claude Code global settings, instructions, custom agents, and slash commands |
 | [`lazydocker`](lazydocker/README.md) | Lazydocker custom commands (e.g. recreate backend/frontend/test services) |
@@ -36,7 +37,7 @@ cd ~/dotfiles
 brew bundle
 
 # Symlink all packages
-stow fish nvim tmux ghostty claude lazydocker lazygit
+stow fish nvim tmux ghostty claude lazydocker lazygit bin pi
 
 # Or symlink individually
 stow fish
