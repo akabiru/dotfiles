@@ -1,0 +1,166 @@
+#!/usr/bin/env bash
+#
+# tmux-agents - traffic lights for AI agent panes in the tmux status bar.
+#
+# Each agent pane carries a @agent_state user option (working, blocked, done,
+# idle). Agents set it through their hooks; the status line renders it and the
+# jump commands read it. State lives in tmux only: no daemon, no cache files.
+set -euo pipefail
+
+PROG="${0##*/}"
+VERSION="0.1.0"
+
+usage() {
+  cat <<USAGE
+$PROG - traffic lights for AI agent panes in the tmux status bar.
+
+USAGE:
+  $PROG set <state>     mark the calling pane: working | blocked | done | idle
+  $PROG clear           remove the mark from the calling pane
+  $PROG sync            reconcile every marked pane against claude agents --json
+  $PROG hook            Claude Code hook adapter: reads the hook JSON on stdin
+                        and maps the event to a state
+  $PROG -h | --help     show this help
+  $PROG -V | --version  show the version
+
+Wire the hook in ~/.claude/settings.json with "command": "$PROG hook" under
+SessionStart, SessionEnd, UserPromptSubmit, PreToolUse, PostToolUse,
+PermissionRequest, PermissionDenied, Notification and Stop.
+
+ENVIRONMENT:
+  TMUX_AGENTS_LOG   append every hook event and the state it mapped to
+USAGE
+}
+
+die() {
+  echo "$PROG: $1" >&2
+  exit "${2:-1}"
+}
+
+usage_error() {
+  echo "$PROG: $1" >&2
+  echo "Try '$PROG --help' for more information." >&2
+  exit 2
+}
+
+refresh_clients() {
+  tmux list-clients -F '#{client_name}' 2>/dev/null |
+    while IFS= read -r client; do
+      tmux refresh-client -S -t "$client" 2>/dev/null || true
+    done
+}
+
+# Hooks run from a pane the agent may already have left, so a missing pane
+# is a no-op rather than an error.
+set_state() {
+  local state="$1"
+  local pane="${2:-${TMUX_PANE:-}}"
+  [[ -n "$pane" ]] || return 0
+  case "$state" in
+    working|blocked|done|idle)
+      tmux set -p -t "$pane" @agent_state "$state" 2>/dev/null || return 0 ;;
+    clear)
+      tmux set -p -t "$pane" -u @agent_state 2>/dev/null || return 0 ;;
+    *) die "unknown state '$state'" ;;
+  esac
+  refresh_clients
+}
+
+current_state() {
+  tmux display -p -t "${TMUX_PANE:-}" '#{@agent_state}' 2>/dev/null || true
+}
+
+# Pids under a pane's shell, however deep (claude may sit inside nvim).
+descendants_of() {
+  awk -v root="$1" '
+    { parent[$1] = $2 }
+    END {
+      for (p in parent) {
+        q = p
+        while (q in parent) { q = parent[q]; if (q == root) { print p; break } }
+      }
+    }' <<< "$2"
+}
+
+# Hooks fire nothing on an Esc interrupt, so a pane stays green while Claude
+# sits waiting. Claude reports the truth per pid (busy, waiting, idle); this
+# corrects any pane whose light disagrees. A fresh session that has never
+# been prompted stays grey rather than being promoted to "your turn".
+sync() {
+  local panes agents tree changed=0
+  panes="$(tmux list-panes -a -f '#{@agent_state}' \
+    -F '#{pane_id} #{pane_pid} #{@agent_state}' 2>/dev/null)" || return 0
+  [[ -n "$panes" ]] || return 0
+  agents="$(claude agents --json 2>/dev/null |
+    jq -r '.[] | select(.status != null) | "\(.pid) \(.status)"')" || return 0
+  [[ -n "$agents" ]] || return 0
+  tree="$(ps -axo pid=,ppid=)"
+
+  local pane pane_pid state pid status want
+  while read -r pane pane_pid state; do
+    status=""
+    for pid in $(descendants_of "$pane_pid" "$tree"); do
+      status="$(awk -v p="$pid" '$1 == p { print $2 }' <<< "$agents")"
+      [[ -n "$status" ]] && break
+    done
+    case "$status" in
+      busy)    want=working ;;
+      waiting) want=blocked ;;
+      idle)    [[ "$state" == working || "$state" == blocked ]] && want=done || want="" ;;
+      *)       want="" ;;
+    esac
+    if [[ -n "$want" && "$want" != "$state" ]]; then
+      tmux set -p -t "$pane" @agent_state "$want" 2>/dev/null && changed=1
+    fi
+  done <<< "$panes"
+
+  [[ "$changed" -eq 1 ]] && refresh_clients
+  return 0
+}
+
+hook() {
+  local payload event ntype state
+  payload="$(cat)"
+  event="$(printf '%s' "$payload" | jq -r '.hook_event_name // empty')"
+  ntype="$(printf '%s' "$payload" | jq -r '.notification_type // empty')"
+
+  case "$event" in
+    SessionStart)                              state=idle ;;
+    SessionEnd)                                state=clear ;;
+    UserPromptSubmit|PostToolUse|PermissionDenied) state=working ;;
+    PermissionRequest)                         state=blocked ;;
+    # Hooks run async, so PreToolUse can land after the PermissionRequest for
+    # the same call; it must not paint over a pending prompt.
+    PreToolUse) [[ "$(current_state)" == blocked ]] && state="" || state=working ;;
+    Stop)                                      state=done ;;
+    Notification)
+      case "$ntype" in
+        permission_prompt|elicitation_dialog|agent_needs_input) state=blocked ;;
+        idle_prompt)                                            state=done ;;
+        *)                                                      state="" ;;
+      esac ;;
+    *) state="" ;;
+  esac
+
+  if [[ -n "${TMUX_AGENTS_LOG:-}" ]]; then
+    printf '%s %s %s %s -> %s\n' "$(date +%T)" "${TMUX_PANE:-nopane}" \
+      "$event" "${ntype:--}" "${state:-ignored}" >> "$TMUX_AGENTS_LOG"
+  fi
+
+  [[ -n "$state" ]] && set_state "$state"
+  return 0
+}
+
+[[ $# -gt 0 ]] || { usage; exit 0; }
+
+case "$1" in
+  -h|--help)    usage ;;
+  -V|--version) echo "$PROG $VERSION" ;;
+  set)          [[ $# -eq 2 ]] || usage_error "'set' takes exactly one state"
+                set_state "$2" ;;
+  clear)        set_state clear ;;
+  hook)         hook ;;
+  sync)         sync ;;
+  -*)           usage_error "unrecognized option '$1'" ;;
+  *)            usage_error "unknown command '$1'" ;;
+esac
