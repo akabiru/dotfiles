@@ -46,7 +46,7 @@ Terminal multiplexer with Catppuccin theme and vim-style navigation.
 
 `agents.conf` renders one flat strip, centred in the status line, listing
 every AI agent pane in every session, plus a plain dot on each window tab that
-holds one. The strip has square edges and a darker surface than the rounded
+holds one. The strip has pointed powerline ends and a darker surface than the rounded
 window tabs so the two never read as the same row of chips. It opens with a
 robot, then one group per session: the session name (mauve for the attached
 session), and per agent a dot in its state colour and the agent name cut to
