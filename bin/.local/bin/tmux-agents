@@ -20,6 +20,10 @@ USAGE:
   $PROG sync            reconcile every marked pane against claude agents --json
   $PROG hook            Claude Code hook adapter: reads the hook JSON on stdin
                         and maps the event to a state
+  $PROG list            marked panes, blocked first: id, state, target, title
+  $PROG jump <pane_id>  switch to that pane, across sessions
+  $PROG next            jump to the next blocked pane, else the next done one
+  $PROG menu            pick an agent pane from a tmux menu
   $PROG -h | --help     show this help
   $PROG -V | --version  show the version
 
@@ -118,6 +122,68 @@ sync() {
   return 0
 }
 
+# Tab-separated: pane_id, state, session:window, title. Panes that need you
+# come first, then finished ones; ties keep session order so "next" cycles
+# predictably.
+list() {
+  local t=$'\t'
+  tmux list-panes -a -f '#{@agent_state}' \
+    -F "#{@agent_state}$t#{pane_id}$t#{session_name}:#{window_index}$t#{pane_current_command}$t#{pane_title}" 2>/dev/null |
+    awk -F'\t' -v OFS='\t' '
+      $4 == "fish" { next }
+      { rank = ($1 == "blocked") ? 0 : ($1 == "done") ? 1 : ($1 == "working") ? 2 : 3
+        print rank, $2, $1, $3, $5 }' |
+    sort -t $'\t' -k1,1n -k4,4 | cut -f2-
+}
+
+jump() {
+  local pane="$1" session
+  session="$(tmux display -p -t "$pane" '#{session_name}' 2>/dev/null)" ||
+    die "no such pane '$pane'"
+  tmux select-window -t "$pane"
+  tmux select-pane -t "$pane"
+  tmux switch-client -t "$session"
+}
+
+# First blocked pane after the current one, wrapping; failing that, first
+# done pane. Nothing to do is reported in the status line, not as an error.
+next() {
+  local rows current target
+  rows="$(list)"
+  current="${TMUX_PANE:-}"
+  for want in blocked done; do
+    target="$(awk -F'\t' -v want="$want" -v cur="$current" '
+      $2 == want { ids[n++] = $1 }
+      END {
+        if (n == 0) exit
+        start = 0
+        for (i = 0; i < n; i++) if (ids[i] == cur) start = i + 1
+        print ids[start % n]
+      }' <<< "$rows")"
+    [[ -n "$target" ]] && { jump "$target"; return 0; }
+  done
+  tmux display-message "no agent needs you"
+}
+
+menu() {
+  local rows args=() keys="123456789abcdefghijklmnopqrstuvwxyz" i=0
+  rows="$(list)"
+  [[ -n "$rows" ]] || { tmux display-message "no agents running"; return 0; }
+  local pane state target title colour
+  while IFS=$'\t' read -r pane state target title; do
+    case "$state" in
+      blocked) colour='#{@thm_red}' ;;
+      done)    colour='#{@thm_yellow}' ;;
+      working) colour='#{@thm_green}' ;;
+      *)       colour='#{@thm_overlay_1}' ;;
+    esac
+    title="${title:0:48}"
+    args+=("#[fg=$colour]●#[default] $target  ${title//#/##}" "${keys:$i:1}" "run-shell '$PROG jump $pane'")
+    i=$((i + 1))
+  done <<< "$rows"
+  tmux display-menu -T "#[align=centre] Agents " -x C -y C "${args[@]}"
+}
+
 hook() {
   local payload event ntype state
   payload="$(cat)"
@@ -161,6 +227,11 @@ case "$1" in
   clear)        set_state clear ;;
   hook)         hook ;;
   sync)         sync ;;
+  list)         list ;;
+  jump)         [[ $# -eq 2 ]] || usage_error "'jump' takes exactly one pane id"
+                jump "$2" ;;
+  next)         next ;;
+  menu)         menu ;;
   -*)           usage_error "unrecognized option '$1'" ;;
   *)            usage_error "unknown command '$1'" ;;
 esac
