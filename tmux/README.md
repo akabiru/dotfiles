@@ -43,10 +43,11 @@ Terminal multiplexer with Catppuccin theme and vim-style navigation.
 
 ## Agent traffic lights
 
-`agents.conf` renders one dot per AI agent pane, centred in the status line and
-grouped by session (current session bold), plus a plain dot on each window tab
-that holds one. The label is the agent's task from its pane title when Claude
-has set one, otherwise the agent name, cut to ten characters.
+`agents.conf` renders one catppuccin-style pill per AI agent pane, centred in
+the status line and grouped by session (current session bold), plus a plain
+dot on each window tab that holds one. The pill's cap takes the state colour;
+its label is the agent's task from its pane title when Claude has set one,
+otherwise the agent name, cut to ten characters.
 
 | Colour | State |
 |--------|-------|
