@@ -158,7 +158,8 @@ list() {
 }
 
 jump() {
-  local pane="$1" session
+  # Accepts a bare pane id or a status range name such as "user|%12".
+  local pane="${1##*|}" session
   session="$(tmux display -p -t "$pane" '#{session_name}' 2>/dev/null)" ||
     die "no such pane '$pane'"
   tmux select-window -t "$pane"
