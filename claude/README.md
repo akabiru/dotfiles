@@ -21,7 +21,7 @@ Global settings, custom agents, and slash commands for [Claude Code](https://doc
 | `agents/release-stewardship-cto.md` | Release readiness, deployment compatibility, ownership mapping |
 | `commands/drive.md` | `/drive` slash command - hand the keyboard to Claude (pairing Mode 2) |
 | `commands/navigate.md` | `/navigate` slash command - Claude drops to navigator (pairing Mode 1) |
-| `hooks/claude-notify.sh` | `Notification` hook - contextual, per-session macOS notifications |
+| `hooks/claude-notify.sh` | `Notification` hook - macOS alert for a permission prompt while the terminal is in the background |
 | `statusline-command.sh` | Status line: directory, git branch, model, context usage |
 
 > `settings.json` is deliberately **not** stowed; it holds machine-local survey and stats state. See [Multiple accounts](#multiple-accounts) for the per-account settings it needs.
@@ -39,16 +39,33 @@ Verbal triggers work too ("you drive" / "I'll drive"). Any `.md` file added to `
 
 ## Notifications
 
-`settings.json` wires a `Notification` hook to `hooks/claude-notify.sh`, which fires `terminal-notifier` whenever Claude is idle waiting for input or needs permission. When several Claude instances run across multiple tmux sessions, a generic "needs your input" alert leaves you guessing which one is asking; the script fixes that.
+Agent state lives in the tmux status bar: every Claude and pi pane shows a
+traffic light (green working, red blocked, yellow your turn), clickable, with
+`prefix + A` to jump to whichever agent needs you. That is
+[`tmux-agents`](../bin/README.md#tmux-agents), fed by hooks. Wire it in
+`settings.json` under each of these events:
 
-The hook process inherits `$TMUX_PANE` from the Claude process's pane, so the script resolves the originating session, window, and project:
+```json
+"hooks": {
+  "SessionStart":      [ { "hooks": [ { "type": "command", "command": "tmux-agents hook", "async": true } ] } ],
+  "SessionEnd":        [ { "hooks": [ { "type": "command", "command": "tmux-agents hook", "async": true } ] } ],
+  "UserPromptSubmit":  [ { "hooks": [ { "type": "command", "command": "tmux-agents hook", "async": true } ] } ],
+  "PreToolUse":        [ { "hooks": [ { "type": "command", "command": "tmux-agents hook", "async": true } ] } ],
+  "PostToolUse":       [ { "hooks": [ { "type": "command", "command": "tmux-agents hook", "async": true } ] } ],
+  "PermissionRequest": [ { "hooks": [ { "type": "command", "command": "tmux-agents hook", "async": true } ] } ],
+  "PermissionDenied":  [ { "hooks": [ { "type": "command", "command": "tmux-agents hook", "async": true } ] } ],
+  "Notification":      [ { "hooks": [ { "type": "command", "command": "tmux-agents hook", "async": true } ] } ],
+  "Stop":              [ { "hooks": [ { "type": "command", "command": "tmux-agents hook", "async": true } ] } ]
+}
+```
 
-- **Title** - `Claude · <session>` (e.g. `Claude · api`), so the session is the first thing you see.
-- **Subtitle** - the project directory plus window index (e.g. `checkout-service  ·  win 2`). tmux auto-names windows after the running command, which is noise, so only the index is used.
-- **Grouped per pane** (`-group claude-notify-$TMUX_PANE`) - a repeat alert from the same instance replaces the previous one instead of stacking, and separate instances keep separate slots.
-- **Click to jump** - clicking brings Ghostty forward and runs `tmux select-window`/`select-pane`/`switch-client` to focus the exact pane that asked.
-
-Outside tmux it degrades gracefully to a plain `Claude Code` notification that focuses Ghostty on click. Requires `terminal-notifier` and `jq` on `PATH`.
+`hooks/claude-notify.sh` is the one OS-level alert left: a `Notification` hook
+that fires `terminal-notifier` only for a permission prompt, and only while
+Ghostty is not the frontmost app. Anything visible on screen is the status
+bar's job. When it does fire it resolves the originating tmux session, window
+and project from `$TMUX_PANE`, groups alerts per pane so repeats replace rather
+than stack, and clicking it focuses the exact pane. Requires `terminal-notifier`
+and `jq` on `PATH`.
 
 > `settings.json` itself is machine-local (it holds survey/stats state) and is not stowed; only the script is version-controlled here. Wire it in your local `~/.claude/settings.json` with:
 >
@@ -82,7 +99,7 @@ stow -d ~/dotfiles/claude -t ~/.claude-<org>-work --ignore='agents' .claude
 CLAUDE_CONFIG_DIR=$HOME/.claude-<org>-work claude   # then /login
 ```
 
-`settings.json` is machine-local, so write one per config dir. Copy the default dir's and repoint the two path-bearing keys at the new dir:
+`settings.json` is machine-local, so write one per config dir. Copy the default dir's and repoint the two path-bearing keys at the new dir (the `tmux-agents hook` entries need no change, and `tmux-agents sync` finds every `~/.claude-*` dir on its own):
 
 ```json
 "hooks": { "Notification": [ { "hooks": [

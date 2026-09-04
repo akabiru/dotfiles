@@ -2,6 +2,9 @@
 #
 # Claude Code "Notification" hook -> contextual macOS notification.
 #
+# Fires only for a permission prompt while Ghostty is not the frontmost app;
+# on-screen state is the tmux status bar's job (see tmux-agents in bin).
+#
 # The generic "Claude needs your input" alert is useless when several
 # Claude instances run across multiple tmux sessions: you can't tell which
 # one is asking, and identical alerts stack into a pile.
@@ -21,6 +24,16 @@
 
 # Hook payload arrives as JSON on stdin.
 payload="$(cat)"
+
+# The tmux status bar (tmux-agents) covers everything visible on screen, so an
+# OS alert only earns its place for a permission prompt while the terminal is
+# in the background.
+ntype="$(printf '%s' "$payload" | jq -r '.notification_type // empty' 2>/dev/null)"
+[ "$ntype" = "permission_prompt" ] || exit 0
+if command -v lsappinfo >/dev/null 2>&1; then
+  front="$(lsappinfo info -only name "$(lsappinfo front 2>/dev/null)" 2>/dev/null)"
+  case "$front" in *Ghostty*) exit 0 ;; esac
+fi
 
 message="$(printf '%s' "$payload" | jq -r '.message // empty' 2>/dev/null)"
 cwd="$(printf '%s' "$payload" | jq -r '.cwd // empty' 2>/dev/null)"

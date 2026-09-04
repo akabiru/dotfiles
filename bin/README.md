@@ -24,6 +24,33 @@ Pane commands and sizes come from the environment: `WORK_EDITOR` (default nvim
 with the Snacks explorer open), `WORK_TOP` (`pi`), `WORK_BOTTOM` (`claude`),
 `WORK_RIGHT_WIDTH` (31), `WORK_SHELL_HEIGHT` (12).
 
+## tmux-agents
+
+Traffic lights for AI agent panes in the tmux status bar. Each agent pane
+carries a `@agent_state` pane option (`working`, `blocked`, `done`, `idle`);
+this script is the only writer, `tmux/.config/tmux/agents.conf` renders it.
+
+```sh
+tmux-agents set working      # mark the calling pane (agents call this)
+tmux-agents clear            # unmark it
+tmux-agents hook             # Claude Code hook adapter, reads the hook JSON on stdin
+tmux-agents sync             # reconcile marked panes against `claude agents --json`
+tmux-agents list             # marked panes, blocked first
+tmux-agents next             # jump to the next blocked pane, else the next done one
+tmux-agents menu             # pick an agent pane from a tmux menu
+tmux-agents jump %12         # jump to one pane, across sessions
+```
+
+Claude Code drives it through hooks (`tmux-agents hook` under SessionStart,
+SessionEnd, UserPromptSubmit, PreToolUse, PostToolUse, PermissionRequest,
+PermissionDenied, Notification, Stop; see [claude](../claude/README.md#notifications)),
+pi through the extension in [pi](../pi/README.md). Hooks fire nothing when you
+Esc out of a turn, so `sync` runs every `status-interval` and corrects any pane
+whose light disagrees with what Claude reports (`busy`, `waiting`, `idle`); it
+queries `~/.claude` and every `~/.claude-*` that has a `settings.json`, or the
+colon-separated `TMUX_AGENTS_CONFIG_DIRS`. `TMUX_AGENTS_LOG` appends every hook
+event and the state it mapped to, for debugging.
+
 ## op-test
 
 Runs RSpec inside the OpenProject `backend-test` container against whatever git
