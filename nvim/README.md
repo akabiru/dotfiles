@@ -130,6 +130,8 @@ Once a debug session is running (`<leader>Xn`), the general `<leader>d…` keyma
 | `<leader>aa` | Accept Claude's proposed diff |
 | `<leader>ad` | Deny Claude's proposed diff |
 
+The Claude terminal runs with `TMUX` blanked (`TMUX_PANE` stays), so mouse-selection copies inside the pane go through plain OSC 52 instead of tmux passthrough, which nvim's terminal would otherwise print as stray base64 in the input.
+
 ## Test Runner (vim-test + vimux)
 
 | Keymap | Action |
