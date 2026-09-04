@@ -7,7 +7,11 @@
 -- Keymaps live under the <leader>a "ai" group.
 return {
   "coder/claudecode.nvim",
-  opts = {},
+  opts = {
+    -- Claude runs under nvim's terminal emulator, not tmux. With $TMUX inherited it wraps
+    -- OSC 52 clipboard writes in tmux passthrough, which libvterm renders as literal text.
+    env = { TMUX = "" },
+  },
   keys = {
     { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
     { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
