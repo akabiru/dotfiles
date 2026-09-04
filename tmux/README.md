@@ -18,8 +18,8 @@ Terminal multiplexer with Catppuccin theme and vim-style navigation.
 | `Ctrl + h/j/k/l` | Cross-pane navigation (via vim-tmux-navigator) |
 | `prefix + A` | Jump to the next agent that needs you (blocked first, then done) |
 | `prefix + a` | Menu of every agent pane, across sessions |
-| click an agent pill | Jump to that pane |
-| click a session cap | Switch to that session |
+| click an agent | Jump to that pane |
+| click a session name | Switch to that session |
 
 ## Settings
 
@@ -44,12 +44,14 @@ Terminal multiplexer with Catppuccin theme and vim-style navigation.
 
 ## Agent traffic lights
 
-`agents.conf` renders one connected catppuccin-style pill per session that has
-an AI agent pane, centred in the status line, plus a plain dot on each window
-tab that holds one. The opening cap is the session name (mauve for the
-attached session), then each agent gets an icon on a cap in its state colour
-and a label: the agent's task from its pane title when Claude has set one,
-otherwise the agent name, cut to ten characters.
+`agents.conf` renders one flat strip, centred in the status line, listing
+every AI agent pane in every session, plus a plain dot on each window tab that
+holds one. The strip has square edges and a darker surface than the rounded
+window tabs so the two never read as the same row of chips. It opens with a
+robot, then one group per session: the session name (mauve for the attached
+session), and per agent a dot in its state colour and the agent name cut to
+ten characters. Groups are split by a thin bar. The pane title is left to the
+window tab on purpose, so no text appears twice on the line.
 
 | Colour | State |
 |--------|-------|
@@ -62,7 +64,7 @@ State comes from the `@agent_state` pane option written by
 [`tmux-agents`](../bin/README.md#tmux-agents); the status line is pure tmux
 format apart from the `tmux-agents sync` reconcile that runs every 5s
 (`status-interval`). The whole segment disappears when no agent is running.
-Pills and caps are clickable through `range=user` status ranges on `MouseDown1Status`;
+Agents and session names are clickable through `range=user` status ranges on `MouseDown1Status`;
 clicks elsewhere on the status line keep tmux's default window select.
 
 ## Plugins
