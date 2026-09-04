@@ -32,7 +32,10 @@ SessionStart, SessionEnd, UserPromptSubmit, PreToolUse, PostToolUse,
 PermissionRequest, PermissionDenied, Notification and Stop.
 
 ENVIRONMENT:
-  TMUX_AGENTS_LOG   append every hook event and the state it mapped to
+  TMUX_AGENTS_LOG           append every hook event and the state it mapped to
+  TMUX_AGENTS_CONFIG_DIRS   colon-separated Claude config dirs for sync
+                            (default: ~/.claude and every ~/.claude-* with a
+                            settings.json)
 USAGE
 }
 
@@ -64,7 +67,8 @@ set_state() {
     working|blocked|done|idle)
       tmux set -p -t "$pane" @agent_state "$state" 2>/dev/null || return 0 ;;
     clear)
-      tmux set -p -t "$pane" -u @agent_state 2>/dev/null || return 0 ;;
+      tmux set -p -t "$pane" -u @agent_state 2>/dev/null || return 0
+      tmux set -p -t "$pane" -u @agent_name 2>/dev/null || true ;;
     *) die "unknown state '$state'" ;;
   esac
   refresh_clients
@@ -86,6 +90,19 @@ descendants_of() {
     }' <<< "$2"
 }
 
+# Each Claude account keeps its own agent registry under its config dir.
+config_dirs() {
+  if [[ -n "${TMUX_AGENTS_CONFIG_DIRS:-}" ]]; then
+    tr ':' '\n' <<< "$TMUX_AGENTS_CONFIG_DIRS"
+    return
+  fi
+  local dir
+  for dir in "$HOME/.claude" "$HOME"/.claude-*; do
+    [[ -f "$dir/settings.json" ]] && echo "$dir"
+  done
+  return 0
+}
+
 # Hooks fire nothing on an Esc interrupt, so a pane stays green while Claude
 # sits waiting. Claude reports the truth per pid (busy, waiting, idle); this
 # corrects any pane whose light disagrees. A fresh session that has never
@@ -95,18 +112,22 @@ sync() {
   panes="$(tmux list-panes -a -f '#{@agent_state}' \
     -F '#{pane_id} #{pane_pid} #{@agent_state}' 2>/dev/null)" || return 0
   [[ -n "$panes" ]] || return 0
-  agents="$(claude agents --json 2>/dev/null |
-    jq -r '.[] | select(.status != null) | "\(.pid) \(.status)"')" || return 0
+  agents="$(for dir in $(config_dirs); do
+      CLAUDE_CONFIG_DIR="$dir" claude agents --json 2>/dev/null
+    done | jq -r '.[] | select(.status != null) | "\(.pid) \(.status) \(.name // "")"')" || return 0
   [[ -n "$agents" ]] || return 0
   tree="$(ps -axo pid=,ppid=)"
 
-  local pane pane_pid state pid status want
+  local pane pane_pid state pid status name want
   while read -r pane pane_pid state; do
-    status=""
+    status="" name=""
     for pid in $(descendants_of "$pane_pid" "$tree"); do
-      status="$(awk -v p="$pid" '$1 == p { print $2 }' <<< "$agents")"
+      read -r status name < <(awk -v p="$pid" '$1 == p { print $2, $3 }' <<< "$agents") || true
       [[ -n "$status" ]] && break
     done
+    if [[ -n "$name" && "$name" != "$(tmux display -p -t "$pane" '#{@agent_name}')" ]]; then
+      tmux set -p -t "$pane" @agent_name "$name" 2>/dev/null && changed=1
+    fi
     case "$status" in
       busy)    want=working ;;
       waiting) want=blocked ;;
