@@ -3,5 +3,5 @@ shell-integration = "fish"
 theme = dark:Catppuccin Mocha,light:Catppuccin Latte
 font-size = 16
 font-family = "JetBrainsMono Nerd Font Mono"
-font-style = "Medium"
+font-style = "SemiBold"
 copy-on-select = clipboard
