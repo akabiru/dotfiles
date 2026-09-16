@@ -11,6 +11,9 @@ return {
     -- Claude runs under nvim's terminal emulator, not tmux. With $TMUX inherited it wraps
     -- OSC 52 clipboard writes in tmux passthrough, which libvterm renders as literal text.
     env = { TMUX = "" },
+    terminal = {
+      split_width_percentage = 0.40,
+    },
   },
   keys = {
     { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
