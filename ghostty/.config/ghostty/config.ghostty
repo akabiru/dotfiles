@@ -4,4 +4,5 @@ theme = dark:Catppuccin Mocha,light:Catppuccin Latte
 font-size = 16
 font-family = "JetBrainsMono Nerd Font Mono"
 font-style = "SemiBold"
+font-style-italic = "SemiBold Italic"
 copy-on-select = clipboard

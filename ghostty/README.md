@@ -7,7 +7,7 @@ Ghostty terminal emulator settings.
 | Setting | Value |
 |---------|-------|
 | Shell | Fish (`/opt/homebrew/bin/fish`) |
-| Font | JetBrainsMono Nerd Font Mono SemiBold, 16pt |
+| Font | JetBrainsMono Nerd Font Mono SemiBold (italics too), 16pt |
 | Theme | Catppuccin Mocha (synced via `theme` command) |
 | Shell integration | Fish |
 | Copy on select | Clipboard (auto-copy mouse selections) |
