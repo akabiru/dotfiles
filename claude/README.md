@@ -21,6 +21,7 @@ Global settings, custom agents, and slash commands for [Claude Code](https://doc
 | `agents/release-stewardship-cto.md` | Release readiness, deployment compatibility, ownership mapping |
 | `commands/drive.md` | `/drive` slash command - hand the keyboard to Claude (pairing Mode 2) |
 | `commands/navigate.md` | `/navigate` slash command - Claude drops to navigator (pairing Mode 1) |
+| `skills/orchestrate/SKILL.md` | `/orchestrate` skill - Claude supervises while subagents implement each chunk and review agents check it |
 | `hooks/claude-notify.sh` | `Notification` hook - macOS alert for a permission prompt while the terminal is in the background |
 | `statusline-command.sh` | Status line: directory, git branch, model, context usage |
 
