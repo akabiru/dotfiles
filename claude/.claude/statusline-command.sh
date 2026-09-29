@@ -21,6 +21,17 @@ model=$(echo "$input" | jq -r '.model.display_name // ""')
 # --- Context window ---
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 
+# --- Plan usage windows (Pro/Max only; absent until the first API response) ---
+# Snapshotted to a file because this stdin JSON is the only place Claude Code
+# exposes the 5-hour / 7-day windows; the pause-resume skill reads it back.
+rate_limits=$(echo "$input" | jq -c '.rate_limits // empty')
+if [ -n "$rate_limits" ]; then
+  snapshot="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/rate-limits.json"
+  printf '%s' "$rate_limits" | jq --argjson now "$(date +%s)" '. + {captured_at: $now}' \
+    > "$snapshot.tmp" 2>/dev/null && mv -f "$snapshot.tmp" "$snapshot"
+fi
+plan_pct=$(printf '%s' "$rate_limits" | jq -r '.five_hour.used_percentage // empty' 2>/dev/null)
+
 # --- Assemble ---
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
@@ -47,6 +58,12 @@ fi
 if [ -n "$used_pct" ]; then
   used_int=$(printf '%.0f' "$used_pct")
   parts="${parts} ${YELLOW}ctx:${used_int}%${RESET}"
+fi
+
+# Plan usage (5-hour window)
+if [ -n "$plan_pct" ]; then
+  plan_int=$(printf '%.0f' "$plan_pct")
+  parts="${parts} ${DIM}5h:${plan_int}%${RESET}"
 fi
 
 printf "%b" "$parts"
