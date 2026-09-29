@@ -11,10 +11,10 @@ Put a draft into the user's running nvim as a new tab holding an unnamed, unsave
 
 1. Take the draft from the conversation (the most recent one unless the user names another). If there isn't one yet, write it first. Use plain markdown with no em dashes and no surrounding `---` separators or code fences, since the buffer should hold exactly what gets pasted.
 2. Write it to a file in the session scratchpad directory (e.g. `<scratchpad>/<slug>.md`).
-3. Run:
+3. Run the script from this skill's base directory:
 
    ```bash
-   ~/.claude-opf-work/skills/nvim-draft/open-draft.sh <file> "$PWD"
+   <skill-base-dir>/open-draft.sh <file> "$PWD"
    ```
 
    The script picks the nvim server whose cwd matches the project dir (or the first live server otherwise, with a warning on stderr), opens a new tab, reads the file in, and prints `['', 1, <lines>]` (unnamed buffer, modified, line count).
