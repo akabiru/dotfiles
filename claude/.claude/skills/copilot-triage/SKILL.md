@@ -10,11 +10,11 @@ Copilot reviews arrive as one review with inline threads plus a body that may li
 ## 1. Fetch
 
 ```bash
-gh api repos/opf/openproject/pulls/<n>/reviews --jq '[.[] | select(.user.login == "copilot-pull-request-reviewer[bot]")] | last | {id, commit_id, state, body}'
-gh api "repos/opf/openproject/pulls/<n>/comments?per_page=100" --jq '[.[] | select(.pull_request_review_id == <review id>) | {id, path, line: (.line // .original_line), body, in_reply_to_id}]'
+gh api repos/{owner}/{repo}/pulls/<n>/reviews --jq '[.[] | select(.user.login == "copilot-pull-request-reviewer[bot]")] | last | {id, commit_id, state, body}'
+gh api "repos/{owner}/{repo}/pulls/<n>/comments?per_page=100" --jq '[.[] | select(.pull_request_review_id == <review id>) | {id, path, line: (.line // .original_line), body, in_reply_to_id}]'
 ```
 
-If the user gave a review URL (`#pullrequestreview-<id>`), use that id instead of `last`. Items under "Previously missed" live only in the review body; parse the `path:line` there. Threads that already have a reply from the user or from this session are done; skip them.
+`gh api` fills `{owner}/{repo}` from the current checkout; set `GH_REPO=<owner>/<repo>` when running outside it. If the user gave a review URL (`#pullrequestreview-<id>`), use that id instead of `last`. Items under "Previously missed" live only in the review body; parse the `path:line` there. Threads that already have a reply from the user or from this session are done; skip them.
 
 Compare the review's `commit_id` with the branch head. A finding on code that changed after the review may already be fixed; say so with the sha instead of fixing twice.
 
@@ -30,12 +30,12 @@ Stop here and wait for the user's go on the fix list, unless they already said "
 
 ## 3. Fix
 
-One commit per finding or per tightly related group, normal commit message rules (no WP-ID prefix, body says why). Run the affected specs serialised on `backend-test`; vitest in the frontend container. Do not push until the user's standing instruction for this branch allows it.
+One commit per finding or per tightly related group, following the project's commit conventions, body says why. Run the affected tests the way the project runs them (its CLAUDE.md or CI config says how). Do not push until the user's standing instruction for this branch allows it.
 
 ## 4. Reply on every thread, after the push
 
 ```bash
-gh api -X POST repos/opf/openproject/pulls/<n>/comments/<thread id>/replies -f body="<text>"
+gh api -X POST repos/{owner}/{repo}/pulls/<n>/comments/<thread id>/replies -f body="<text>"
 ```
 
 Text register: one or two sentences, sha first for fixes ("Fixed in <sha>: ..."), the concrete reason for rejections ("Not changed: the spec passes because Capybara's rack_test driver honours data-turbo-method; verified by running it."). No AI attribution, no "great catch", no em dashes.
