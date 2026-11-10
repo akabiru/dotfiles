@@ -114,6 +114,7 @@ Once a debug session is running (`<leader>Xn`), the general `<leader>d…` keyma
 | `<leader>gvo` | Open Diffview (3-way merge view during a merge, otherwise diff) |
 | `<leader>gvc` | Close Diffview |
 | `<leader>gvh` / `gvH` | Diffview file history (current file / whole repo) |
+| `gR` (Ruby) | Fast references: whole-word grep of word under cursor / selection across Ruby and ERB files. Use instead of `gr` for methods, since `ruby_lsp` re-parses the whole workspace per request; keep `gr` for constants |
 | `p` / `P` (visual) | Paste over selection without overwriting the unnamed register (clipboard survives) |
 
 ## Claude Code (claudecode.nvim)

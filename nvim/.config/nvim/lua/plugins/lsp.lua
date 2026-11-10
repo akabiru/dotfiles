@@ -14,6 +14,20 @@ return {
         ruby_lsp = {
           mason = false,
           cmd = { vim.fn.expand("~/.rbenv/shims/ruby-lsp") },
+          keys = {
+            -- ruby_lsp answers references by re-parsing every Ruby file in
+            -- the workspace, which takes seconds in a large app, and it
+            -- matches methods by name only. A whole-word grep gives the same
+            -- method results instantly and also covers ERB templates.
+            {
+              "gR",
+              function()
+                Snacks.picker.grep_word({ ft = { "ruby", "erb" } })
+              end,
+              desc = "References (grep word)",
+              mode = { "n", "x" },
+            },
+          },
           init_options = {
             addonSettings = {
               -- The Rails addon interrupts with a "Run Migrations" prompt
