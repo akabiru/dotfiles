@@ -13,6 +13,7 @@ Global settings, custom agents, and slash commands for [Claude Code](https://doc
 | `agents/rails-code-reviewer.md` | Rails code review (ActiveRecord, PostgreSQL, service objects) |
 | `agents/rails-staff-engineer.md` | Staff-level Rails implementation and refactoring |
 | `agents/rails-security-auditor.md` | Rails security audit (injection, authz, uploads, deserialization) |
+| `agents/llm-security-reviewer.md` | LLM feature security review (prompt injection sources and sinks, rendering of model output, gateway capabilities, cost) |
 | `agents/frontend-architect.md` | Frontend architecture guidance (Stimulus, Angular, ViewComponents, Turbo) |
 | `agents/local-first-architect.md` | Local-first/CRDT architecture (Yjs, BlockNote, Hocuspocus, ProseMirror) |
 | `agents/primer-code-reviewer.md` | Primer design system review (ViewComponents, Forms DSL, a11y) |
