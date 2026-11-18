@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+#
+# tmux-job - run a long command in a background pane at the bottom of the
+# current tmux window, and report its progress on the agent traffic lights.
+set -euo pipefail
+
+PROG="${0##*/}"
+HEIGHT="${TMUX_JOB_HEIGHT:-30%}"
+
+usage() {
+  cat <<USAGE
+$PROG - run a long command in a background tmux pane and track its status.
+
+Splits a pane below the calling one without taking focus, runs the command
+there, and lights the pane on the tmux-agents strip: green while it runs,
+yellow when it succeeds, red when it fails. Jump back with prefix+A or the
+prefix+a menu. The pane stays open on the result until you press a key.
+
+USAGE:
+  $PROG <command> [args...]
+  $PROG -n <label> <command> [args...]   label shown on the strip
+  $PROG -h | --help
+
+EXAMPLES:
+  $PROG bin/compose setup
+  $PROG -n recreate bin/compose up -d backend frontend --force-recreate
+
+ENVIRONMENT:
+  TMUX_JOB_HEIGHT   pane height, lines or percent (default $HEIGHT)
+USAGE
+}
+
+die() {
+  echo "$PROG: $1" >&2
+  exit "${2:-1}"
+}
+
+# Runs inside the new pane.
+run_job() {
+  local label="$1"
+  shift
+  tmux set -p -t "$TMUX_PANE" @agent_name "$label"
+  tmux-agents set working
+  printf '\033]2;%s\033\\' "$label"
+  printf '$ %s\n\n' "$*"
+
+  local status=0
+  "$@" || status=$?
+
+  echo
+  if [[ "$status" -eq 0 ]]; then
+    tmux-agents set done
+    tmux display-message "$label: done"
+    echo "$label: done"
+  else
+    tmux-agents set blocked
+    tmux display-message "$label: failed (exit $status)"
+    echo "$label: failed (exit $status)"
+  fi
+  read -r -s -n 1 -p "press any key to close"
+}
+
+label=""
+case "${1:-}" in
+  ""|-h|--help) usage; exit 0 ;;
+  --in-pane)    shift; run_job "$@"; exit 0 ;;
+  -n)           [[ $# -ge 3 ]] || die "-n needs a label and a command" 2
+                label="$2"; shift 2 ;;
+esac
+
+[[ -n "${TMUX:-}" ]] || die "not inside tmux"
+[[ -n "$label" ]] || label="$*"
+
+tmux split-window -v -d -l "$HEIGHT" -c "$PWD" -t "${TMUX_PANE:-}" \
+  "$0" --in-pane "$label" "$@"

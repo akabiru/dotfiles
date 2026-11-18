@@ -51,6 +51,21 @@ queries `~/.claude` and every `~/.claude-*` that has a `settings.json`, or the
 colon-separated `TMUX_AGENTS_CONFIG_DIRS`. `TMUX_AGENTS_LOG` appends every hook
 event and the state it mapped to, for debugging.
 
+## tmux-job
+
+Runs a long command in a background pane below the calling one, without taking
+focus, and lights that pane on the tmux-agents strip: green while it runs,
+yellow when it succeeds, red when it fails. `prefix+A` jumps to it; the pane
+stays on the result until you press a key. The lazydocker custom commands use
+it (see [lazydocker](../lazydocker/README.md)).
+
+```sh
+tmux-job bin/compose setup
+tmux-job -n recreate bin/compose up -d backend --force-recreate   # short strip label
+```
+
+`TMUX_JOB_HEIGHT` sets the pane height (default `30%`).
+
 ## op-test
 
 Runs RSpec inside the OpenProject `backend-test` container against whatever git

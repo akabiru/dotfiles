@@ -3,18 +3,22 @@
 #
 # Custom commands are menu-driven, not directly bindable to a key. On the
 # Services panel press `c` ("run predefined custom command"), then pick the
-# entry. With a single command defined this is effectively `c` then Enter.
+# entry.
+#
+# Each command hands off to tmux-job, which runs it in a background pane below
+# the editor and returns immediately, so lazydocker stays usable while it runs.
+# Progress shows on the tmux agent strip; prefix+A jumps to the pane.
 customCommands:
   services:
     - name: "Op: recreate backend + frontend + backend-test"
-      command: "bin/compose up -d backend frontend backend-test --force-recreate"
+      command: "tmux-job -n recreate bin/compose up -d backend frontend backend-test --force-recreate"
       serviceNames: [] # empty = available no matter which service row is selected
-      attach: false # set true to watch the recreate output live in a subprocess
+      attach: false
     - name: "Op: setup backend + frontend services"
-      command: "bin/compose setup" # backend setup + frontend & hocuspocus npm install
+      command: "tmux-job -n setup bin/compose setup" # backend setup + frontend & hocuspocus npm install
       serviceNames: []
-      attach: true # setup is long-running; watch the output live
+      attach: false
     - name: "Op: restart backend + frontend services"
-      command: "bin/compose up -d backend frontend --force-recreate"
+      command: "tmux-job -n restart bin/compose up -d backend frontend --force-recreate"
       serviceNames: []
       attach: false

@@ -10,6 +10,8 @@ Lazydocker has no per-repo config, so this command appears in every project's me
 
 The commands route through OpenProject's `bin/compose` wrapper instead of raw `docker compose`, so they inherit its `.env` loading, `docker-compose.override.yml` inclusion, `config/database.yml` guard, and `docker-compose` vs `docker compose` detection. Because `bin/compose` is a relative path, launch lazydocker from the openproject repo root (the cwd these commands already assumed).
 
+Each command runs through [`tmux-job`](../bin/README.md#tmux-job), so it opens in a background pane at the bottom of the tmux window instead of taking over the lazydocker float. Lazydocker returns straight away; the pane's light on the tmux agent strip goes green while the command runs, yellow when it succeeds and red when it fails. Jump to it with `prefix+A` (or pick it from `prefix+a`), then press any key to close it. This needs lazydocker to run inside tmux.
+
 | Command | Runs |
 |---------|------|
 | Op: recreate backend + frontend + backend-test | `bin/compose up -d backend frontend backend-test --force-recreate` |
